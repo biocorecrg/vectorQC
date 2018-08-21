@@ -1,2 +1,7 @@
 test
 lib
+log
+work
+log*
+output
+.nextflow*
