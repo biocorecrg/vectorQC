@@ -34,6 +34,7 @@ BIOCORE@CRG ChIPseq - N F  ~  version ${version}
 reads                       : ${params.reads}
 email for notification      : ${params.email}
 output (output folder)      : ${params.output}
+commonenz (common enzymes)  : ${params.commonenz}
 features 					: ${params.features}
 """
 
@@ -47,6 +48,9 @@ if (params.resume) exit 1, "Are you making the classical --resume typo? Be caref
 
 featuresdb = file(params.features)
 if( !featuresdb.exists() ) exit 1, "Missing feature file: ${params.features}"
+
+commonenz = file(params.commonenz)
+if( !commonenz.exists() ) exit 1, "Missing common enzyme file: ${params.commonenz}"
 
 /*
 // Setting the reference genome file and the annotation file (validation)
@@ -69,6 +73,8 @@ outputfolder    = "${params.output}"
 outputQC		= "${params.output}/QC"
 outputAssembly  = "${params.output}/Assembly"
 outputBlast  	= "${params.output}/Blast"
+outputRE  	= "${params.output}/REsites"
+outputPlot  	= "${params.output}/Plots"
 /*
 outputMultiQC		= "${params.output}/multiQC"
 outputMapping	= "${params.output}/Alignments"
@@ -176,11 +182,11 @@ process assemble {
     set pair_id, file(readsA), file(readsB) from  filtered_reads_for_assembly.flatten().collate( 3 )
 
     output:
-   	set pair_id, file("${pair_id}_assembly.fa") into scaffold_file
+   	set pair_id, file("${pair_id}_assembly.fa") into scaffold_file_for_blast, scaffold_file_for_re, scaffold_file_for_parsing
 
     script:
 	"""
-	   spades.py --pe1-1 ${readsA} --pe1-2 ${readsB} -o ${pair_id} -t ${task.cpus} -m ${task.memory.giga} 
+	   spades.py --careful --pe1-1 ${readsA} --pe1-2 ${readsB} -o ${pair_id} -t ${task.cpus} -m ${task.memory.giga} 
 	   cp ${pair_id}/scaffolds.fasta ${pair_id}_assembly.fa
 	"""
 }
@@ -196,12 +202,11 @@ process makeblastdb {
     file(features_file) from featuresdb
 
     output:
-   	set features_file, file("${features_file}*") into blastdb_files
+   	set "blast_db.fasta", file("blast_db.fasta*") into blastdb_files
 
     script:
-	"""
-		makeblastdb -in ${features_file} -dbtype nucl
-	"""
+    def aligner = new NGSaligner(reference_file:features_file, index:"blast_db.fasta", dbtype:"nucl")
+	aligner.doIndexing("blast")
 }
 
 /*
@@ -212,19 +217,62 @@ process runBlast {
 	tag { pair_id }
 	publishDir outputBlast
 
+    label 'big_mem_cpus'
+
     input:
     set blastname, file(blastdbs) from blastdb_files
-    set pair_id, file(scaffold_file) from scaffold_file
+    set pair_id, file(scaffold_file) from scaffold_file_for_blast
 
     output:
-    file("${pair_id}.blastout")
+    set pair_id, file("${pair_id}.blastout") into blast_out_for_plot
+
+    script:
+    def aligner = new NGSaligner(reads:scaffold_file, output:"${pair_id}.blastout", index:"blast_db.fasta", cpus:task.cpus, extrapars:"-outfmt 6 -word_size 11")
+	aligner.doAlignment("blast")
+}
+
+
+/*
+ * Run restrict 
+ */
+ 
+process runRestrict {
+	tag { pair_id }
+    publishDir outputRE
+
+    input:
+    set pair_id, file(scaffold_file) from scaffold_file_for_re
+
+    output:
+    set pair_id, file("${pair_id}.restrict") into restric_file_for_graph
 
     script:
 	"""
-		blastn -out ${pair_id}.blastout -db ${blastname} -query ${scaffold_file} -outfmt 6 -word_size 11
+		restrict -sequence ${scaffold_file} -outfile ${pair_id}.restrict -single -auto -enzymes @${commonenz} -plasmid
 	"""
 }
 
+
+/*
+ * make plots
+ */
+ 
+process makePlot {
+	tag { pair_id }
+    publishDir outputPlot
+
+    input:
+    set pair_id, file(blastout), file(resites), file(scaffold) from blast_out_for_plot.join(restric_file_for_graph).join(scaffold_file_for_parsing)
+
+    output:
+    file("${pair_id}.png") 
+
+    script:
+	"""
+		parse.py -b ${blastout} -f ${scaffold} -o ${pair_id}.tab -r ${resites}
+		\$CGVIEW -i ${pair_id}.tab  -x true -f PNG -H 1000 -o ${pair_id}.png
+	"""
+}
 /*
  * Mail notification
 
