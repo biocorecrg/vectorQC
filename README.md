@@ -2,7 +2,7 @@
 
 This pipeline analyzes the result of MIseq sequencing of a collection of vectors. The input is a pair of fastq files per sample (vector) and is specified in **params.config** file. The default **feature db** file is obtained by the tool PlasMapper (http://wishart.biology.ualberta.ca/PlasMapper/) while the **ReBase** is the database for restriction enzymes (http://rebase.neb.com/rebase/rebase.html).
 
-Docker image is in vectorQC_docker repository
+Docker file is in https://github.com/biocorecrg/vectorQC_docker repository
 
 Once the pipeline is finished you can receive a mail with attached the MultiQC report.
 
