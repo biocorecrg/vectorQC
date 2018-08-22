@@ -24,7 +24,7 @@ params.resume          = false
 
 
 log.info """
-BIOCORE@CRG ChIPseq - N F  ~  version ${version}
+Biocore@CRG VectorQC - N F  ~  version ${version}
 
 ╔╗ ┬┌─┐┌─┐┌─┐┬─┐┌─┐╔═╗╦═╗╔═╗  ┬  ┬┌─┐┌─┐┌┬┐┌─┐┬─┐╔═╗ ╔═╗
 ╠╩╗││ ││  │ │├┬┘├┤ ║  ╠╦╝║ ╦  └┐┌┘├┤ │   │ │ │├┬┘║═╬╗║  
@@ -73,8 +73,10 @@ outputfolder    = "${params.output}"
 outputQC		= "${params.output}/QC"
 outputAssembly  = "${params.output}/Assembly"
 outputBlast  	= "${params.output}/Blast"
-outputRE  	= "${params.output}/REsites"
+outputRE  		= "${params.output}/REsites"
 outputPlot  	= "${params.output}/Plots"
+outputGBK		= "${params.output}/GenBank"
+
 /*
 outputMultiQC		= "${params.output}/multiQC"
 outputMapping	= "${params.output}/Alignments"
@@ -259,17 +261,19 @@ process runRestrict {
  
 process makePlot {
 	tag { pair_id }
-    publishDir outputPlot
+    publishDir outputPlot, mode: 'copy', pattern: '*.png' 
+    publishDir outputGBK, mode: 'copy', pattern: '*.gbk'
 
     input:
     set pair_id, file(blastout), file(resites), file(scaffold) from blast_out_for_plot.join(restric_file_for_graph).join(scaffold_file_for_parsing)
 
     output:
     file("${pair_id}.png") 
+    file("${pair_id}.gbk") 
 
     script:
 	"""
-		parse.py -b ${blastout} -f ${scaffold} -o ${pair_id}.tab -r ${resites}
+		parse.py -n ${pair_id} -b ${blastout} -f ${scaffold} -o ${pair_id} -r ${resites}
 		\$CGVIEW -i ${pair_id}.tab  -x true -f PNG -H 1000 -o ${pair_id}.png
 	"""
 }
