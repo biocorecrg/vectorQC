@@ -35,9 +35,10 @@ reads                       : ${params.reads}
 email for notification      : ${params.email}
 output (output folder)      : ${params.output}
 commonenz (common enzymes)  : ${params.commonenz}
+multiconfig                 : ${params.multiconfig}
 features 					: ${params.features}
+inserts 					: ${params.inserts}
 """
-
 
 if (params.help) {
     log.info 'This is the Biocore\'s vectorQC pipeline'
@@ -52,23 +53,13 @@ if( !featuresdb.exists() ) exit 1, "Missing feature file: ${params.features}"
 commonenz = file(params.commonenz)
 if( !commonenz.exists() ) exit 1, "Missing common enzyme file: ${params.commonenz}"
 
-/*
-// Setting the reference genome file and the annotation file (validation)
-
-peakconfig = file(params.peakconfig)
-if( !peakconfig.exists() ) exit 1, "Missing MACS2 config: '$peakconfig'. Specify path with --peakconfig"
-
-genome_file = file(params.genome)
-annotation_file = file(params.annotation)
 multiconfig = file(params.multiconfig)
-bigConfFolder = file("$baseDir/bigConf")
+if( !multiconfig.exists() ) exit 1, "Missing multiconfig file: ${params.multiconfig}"
+
+tooldb = file(params.tooldb)
+if( !tooldb.exists() ) exit 1, "Missing tooldb file: ${params.tooldb}"
 
 
-if( !genome_file.exists() ) exit 1, "Missing genome file: ${genome_file}"
-if( !annotation_file.exists() ) exit 1, "Missing annotation file: ${annotation_file}"
-
-outputfolder    = "${params.output}"
-*/
 
 outputQC		= "${params.output}/QC"
 outputAssembly  = "${params.output}/Assembly"
@@ -76,22 +67,9 @@ outputBlast  	= "${params.output}/Blast"
 outputRE  		= "${params.output}/REsites"
 outputPlot  	= "${params.output}/Plots"
 outputGBK		= "${params.output}/GenBank"
-
-/*
-outputMultiQC		= "${params.output}/multiQC"
-outputMapping	= "${params.output}/Alignments"
-outputIndex		= "${params.output}/Index"
-peakCalling		= "${params.output}/Peaks"
-outputProfiles  = "${params.output}/Profiles"
-outputAnnotation  = "${params.output}/Annotation"
+outputMultiQC	= "${params.output}/multiQC"
 outputReport    = file("${outputMultiQC}/multiqc_report.html")
-UCSCgenomeID	= "${params.UCSCgenomeID}"
-tooldb = file(params.tooldb)
 
-if( UCSCgenomeID != "" ) {
-	rootProfiles = outputProfiles
-	outputProfiles = "${outputProfiles}/${params.UCSCgenomeID}"
-}
 
 
 // move old multiQCreport in case it already exists 
@@ -99,7 +77,6 @@ if( outputReport.exists() ) {
   log.info "Moving old report to multiqc_report.html multiqc_report.html.old"
   outputReport.moveTo("${outputMultiQC}/multiqc_report.html.old")
 }
-*/
 
 // Create channels for sequences data
 Channel
@@ -163,7 +140,7 @@ process trimmedQC {
      file(filtered_read) from filtered_read_for_QC.flatten()
 
      output:
-   	 file("*_filt_fastqc.zip") into fastqc_files
+   	 file("*_filt_fastqc.zip") into trimmed_fastqc_files
 
     script:
     def qc = new QualityChecker(input:filtered_read, cpus:task.cpus)
@@ -176,7 +153,6 @@ process trimmedQC {
  
 process assemble {
 	tag { pair_id }
-    publishDir outputAssembly, mode: 'copy'
 
     label 'big_mem_cpus'
 
@@ -184,13 +160,64 @@ process assemble {
     set pair_id, file(readsA), file(readsB) from  filtered_reads_for_assembly.flatten().collate( 3 )
 
     output:
-   	set pair_id, file("${pair_id}_assembly.fa") into scaffold_file_for_blast, scaffold_file_for_re, scaffold_file_for_parsing
+   	set pair_id, file("${pair_id}_assembly.fa") into scaffold_for_evaluation
 
     script:
 	"""
-	   spades.py --careful --pe1-1 ${readsA} --pe1-2 ${readsB} -o ${pair_id} -t ${task.cpus} -m ${task.memory.giga} 
+	   spades.py --cov-cutoff auto --careful --pe1-1 ${readsA} --pe1-2 ${readsB} -o ${pair_id} -t ${task.cpus} -m ${task.memory.giga} 
 	   cp ${pair_id}/scaffolds.fasta ${pair_id}_assembly.fa
 	"""
+}
+
+process evaluateAssembly {
+	tag { pair_id }
+    publishDir outputAssembly, mode: 'copy'
+    echo true
+
+    label 'big_mem_cpus'
+
+    input:
+    set pair_id, file(scaffolds) from  scaffold_for_evaluation
+    
+    output:
+   	set pair_id, file("${pair_id}_assembly_ev.fa") into scaffold_file_for_blast, scaffold_file_for_re, scaffold_file_for_parsing
+
+    script:
+	"""
+		evaluateAssembly.py -i ${scaffolds} -o ${pair_id}_assembly_ev.fa -n ${pair_id}
+	"""
+}
+
+/*
+ * joine db files
+ */
+process makeInsertDB {
+	tag { params.inserts }
+
+	when:
+	params.inserts
+
+    input:
+    file(features_file) from featuresdb
+	
+	output:
+	file("whole_db_pipe.fasta") into whole_db_fasta
+	
+	"""
+		parseInserts.py -i ${params.inserts} -o  whole_db_pipe.fasta
+     	if [ `echo ${features_file} | grep ".gz"` ]; then 
+			zcat ${features_file} >> whole_db_pipe.fasta
+		else 
+			cat zcat ${features_file} >> whole_db_pipe.fasta
+		fi
+	"""
+
+}
+
+if (whole_db_fasta) {
+	fasta_for_blast_db = whole_db_fasta
+} else {
+	fasta_for_blast_db = featuresdb
 }
 
 /*
@@ -201,7 +228,7 @@ process makeblastdb {
 	tag { features_file }
 	
     input:
-    file(features_file) from featuresdb
+    file(features_file) from fasta_for_blast_db
 
     output:
    	set "blast_db.fasta", file("blast_db.fasta*") into blastdb_files
@@ -277,9 +304,44 @@ process makePlot {
 		\$CGVIEW -i ${pair_id}.tab  -x true -f PNG -H 1000 -o ${pair_id}.png
 	"""
 }
+
+/*
+* Make section of multiQC report about the tools used. 
+*/
+ 
+process tool_report {
+
+	input:
+	file(tooldb)
+
+    output:
+	file("tools_mqc.txt") into tool_report_for_multiQC 
+		
+	script:
+	"""
+		 make_tool_desc_for_multiqc.pl -c ${tooldb} -l fastqc,skewer,spades,blastn,cgview,emboss > tools_mqc.txt
+	"""
+}
+
+process multiQC {
+    publishDir outputMultiQC, mode: 'copy'
+
+    input:
+    file '*' from raw_fastqc_files.mix(logTrimming_for_QC,trimmed_fastqc_files).flatten().collect()
+    file 'pre_config.yaml.txt' from multiconfig
+    file (tool_report_for_multiQC)
+
+    output:
+    file("multiqc_report.html") into multiQC 
+	
+    script:
+	def reporter = new Reporter(title:"VectorQC screening", application:"Mi-seq", subtitle:"", PI:"CRG", user:"CRG", id:"vectors", email:params.email, config_file:multiconfig)
+	reporter.makeMultiQCreport()
+}
+
 /*
  * Mail notification
-
+ */
 workflow.onComplete {
 
     def msg = """\
@@ -294,6 +356,5 @@ workflow.onComplete {
         """
         .stripIndent()
 
-    sendMail(to: params.email, subject: "ChipSeq execution: ${params.title}", body: msg,  attach: "${outputMultiQC}/multiqc_report.html")
+    sendMail(to: params.email, subject: "VectorQC execution", body: msg,  attach: "${outputMultiQC}/multiqc_report.html")
 }
- */

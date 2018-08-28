@@ -1,0 +1,31 @@
+custom_logo: '/software/bi/biocore_tools/logo/biocore-logo.png'
+custom_logo_url: 'https://biocore.crg.eu'
+custom_logo_title: 'Bioinformatics Core Facility @ CRG'
+
+
+extra_fn_clean_trim: 
+   - '-trimmed'
+
+extra_fn_clean_exts:
+    - type: remove
+      pattern: _read
+    - type: remove
+      pattern: -trimmed-pair
+
+table_columns_visible:
+    FastQC:
+        percent_duplicates: False
+
+module_order:
+ - fastqc:
+        name: 'FastQC (raw)'
+        path_filters:
+            - '*_fastqc.zip'
+ - fastqc:
+        name: 'FastQC (trimmed)'
+        info: 'This section of the report shows FastQC results after adapter trimming.'
+        target: ''
+        path_filters:
+            - '*trimmed*_fastqc.zip'
+ - skewer
+  

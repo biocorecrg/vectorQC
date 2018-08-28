@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 # Check pipeline dependency
-bionext_ver="0.6.0"
+bionext_ver="0.7.0"
 tool_desc_ver="1.3"
 
 # Check Nextflow
@@ -46,6 +46,3 @@ if [ -e "conf_tools.txt" ]; then {
 		rm -f v${tool_desc_ver}.tar.gz
 }
 fi
-
-
-

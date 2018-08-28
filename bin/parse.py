@@ -45,6 +45,7 @@ trans_code = {'HYB': 'score',
 'PRO': 'promoter',
 'REG': 'regulatory_sequence',
 'REP': 'gene',
+'INS': 'gene',
 'SEL': 'gene',
 'TAG': 'score',
 'TER': 'terminator'}
@@ -56,6 +57,7 @@ gb_trans_code = {'HYB': 'misc_feature',
 'OTH': 'misc_feature',
 'PRO': 'promoter',
 'REG': 'misc_feature',
+'INS': 'CDS',
 'REP': 'CDS',
 'SEL': 'CDS',
 'TAG': 'misc_feature',
@@ -122,48 +124,58 @@ with inhandle as fi:
 		else:
 			strand = "reverse"
 			gbcoords =  "complement(" + str(qstart) + ".." + str(qend) + ")"
-		
+
+		rowsrting   = strand + "\t1\t" + str(qstart) + "\t" + str(qend) + "\t1\t1\t" + trans_code[feattype] + "\t" + featname + "-" + feattype + "\n"
+		rowgbstring = "\t" +  gb_trans_code[feattype] + "\t" + gbcoords + "\n" + "\t\t/label=" + featname + "\n"			
+					
 		if (featsize<=50):
 			minsize = int(round(featsize/10))
 		else:
 			minsize = maxtolerance
 		
 		if (featsize - qlength <= minsize and identity>=minidentity): 
-			outstring = outstring + strand + "\t1\t" + str(qstart) + "\t" + str(qend) + "\t1\t1\t" + trans_code[feattype] + "\t" + featname + "\n"
-			gbkstring = gbkstring + "\t" +  gb_trans_code[feattype] + "\t" + gbcoords + "\n" + "\t\t/label=" + featname + "\n"
+			outstring = outstring + rowsrting
+			gbkstring = outstring + rowgbstring
 
 		if (qstart <= maxtolerance and identity>=minidentity): # special case circular genome!!
-			if (featname not in coords):
-				coords[featname]["5p"] = seqsize
-				coords[featname]["3p"] = 0
-				coords[featname]["string5"] = ""
-				coords[featname]["string3"] = ""
-				coords[featname]["minsize"] = featsize - minsize
-				
-			if (coords[featname]["3p"]< qend):
-				coords[featname]["3p"] = qend
-				coords[featname]["string3"] = strand + "\t1\t" + str(qstart) + "\t" + str(qend) + "\t1\t1\t" + trans_code[feattype] + "\t" + featname + "\n"
-				coords[featname]["gbstring3"] = "\t" +  gb_trans_code[feattype] + "\t" + gbcoords + "\n" + "\t\t/label=" + featname + "\n"
+			if (featname not in coords): # inizialize
+				coords[featname]["sizeBefore0"]     = 0
+				coords[featname]["sizeAfter0"]      = qend
+				coords[featname]["stringAfter0"]    = rowsrting
+				coords[featname]["stringBefore0"]   = ""
+				coords[featname]["stringGBAfter0"]  = rowgbstring
+				coords[featname]["stringGBBefore0"] = ""
+			# Override in case the next match is longer than the previous and the subject matched is the same
+			if (coords[featname]["sizeAfter0"]< qend):
+				coords[featname]["sizeAfter0"]     = qend
+				coords[featname]["stringAfter0"]   = rowsrting
+				coords[featname]["stringGBAfter0"] = rowgbstring
 			
 		if (qend >= seqsize - maxtolerance and identity>=minidentity):
-			if (featname not in coords):
-				coords[featname]["5p"] = seqsize
-				coords[featname]["3p"] = 0
-				coords[featname]["string5"] = ""
-				coords[featname]["string3"] = ""
-				coords[featname]["minsize"] = featsize - minsize
-	
-			if (coords[featname]["5p"]> qstart):
-				coords[featname]["5p"] = qstart
-				coords[featname]["string5"] = strand + "\t1\t" + str(qstart) + "\t" + str(qend) + "\t1\t1\t" + trans_code[feattype] + "\t" + featname + "\n"
-				coords[featname]["gbstring5"] = "\t" +  gb_trans_code[feattype] + "\t" + gbcoords + "\n" + "\t\t/label=" + featname + "\n"
+			if (featname not in coords): # inizialize
+				coords[featname]["sizeBefore0"]    = seqsize - qstart
+				coords[featname]["sizeAfter0"]     = 0
+				coords[featname]["stringAfter0"]   = ""
+				coords[featname]["stringBefore0"]  = rowsrting
+				coords[featname]["stringGBAfter0"] = rowgbstring
+				coords[featname]["stringGBBefore0"] = ""
+			# Override in case the next match is longer than the previous and the subject matched is the same	
+			if (coords[featname]["sizeBefore0"] < seqsize - qstart):
+				coords[featname]["sizeBefore0"]    = seqsize - qstart
+				coords[featname]["stringBefore0"]  = rowsrting
+				coords[featname]["stringGBBefore0"] = rowgbstring
 
 
 for featname_break in coords:
-	size = coords[featname_break]["3p"] + seqsize - coords[featname_break]["5p"]
-	if (size>=coords[featname_break]["minsize"]):
-			outstring = outstring  + coords[featname_break]["string5"] + coords[featname_break]["string3"]
-			gbkstring = gbkstring  + coords[featname_break]["gbstring5"] + coords[featname_break]["gbstring3"]
+	size = coords[featname_break]["sizeBefore0"] + coords[featname_break]["sizeAfter0"]
+	if (size<=50):
+		minsize = int(round(size/10))
+	else:
+		minsize = maxtolerance
+
+	if (size>=minsize):
+		outstring = outstring  + coords[featname_break]["stringBefore0"] + coords[featname_break]["stringAfter0"]
+		gbkstring = gbkstring  + coords[featname_break]["stringGBBefore0"] + coords[featname_break]["stringGBAfter0"]
 
 gbkstring = gbkstring + "ORIGIN\n" + gbseq + "\n"
 		
@@ -177,15 +189,10 @@ with rihandle as fi:
 					strand = "reverse"
 				else:
 					strand = "forward"	
-				outstring = outstring + strand + "\t2\t" + fields[1] + "\t" + fields[2] + "\t1\t1\trestriction_site\t" + fields[4] + "\n"
+				outstring = outstring + strand + "\t2\t" + fields[1] + "\t" + fields[2] + "\t1\t1\tunique_restriction_site\t" + fields[4] + "\n"
 
 outhandle.write(outstring)
 outhandle.close()
 
 outhandlegb.write(gbkstring)
 outhandlegb.close()
-		
-
-	
-
-
