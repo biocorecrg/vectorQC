@@ -6,6 +6,11 @@ Both Docker and singularity files are in https://github.com/biocorecrg/vectorQC_
 
 Once the pipeline is finished you can receive a mail with attached the MultiQC report.
 
+## Requisites
+You need either a **docker** (https://www.docker.com/) or **singularity** (https://www.sylabs.io/) linux containers and **nextflow** workflow manager (https://www.nextflow.io/). To install nextflow:
+
+     curl -s https://get.nextflow.io | bash 
+
 -----
 To run the pipeline you have to clone this repository and the corresponding docker FILE for creating the docker / singularity image. 
 
@@ -22,14 +27,14 @@ The config file **nextflow.config** contains information about location of the s
 
      sh INSTALL.sh 
 
-for downloading the **BioNextflow librar** and the file containing the information about the tools
+for downloading the **BioNextflow library** and the file containing the information about the tools
 
 **Important!! Check if your nextflow is updated to the latest version!!! (type nextflow self-update)**
 
 ## Parameters
 To check the required parameters you can type nextflow run. Params are specified in **params.config** file.
 
-**./main.nf --help**
+**nextflow run main.nf --help**
 
 |parameter name         | value|
 |---------------------------------|------------------------|
