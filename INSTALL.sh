@@ -13,15 +13,6 @@ curl -s https://get.nextflow.io | bash
 "
 }
 fi
-# Check Singularity
-if (command -v singularity > /dev/null 2>&1); then {
-	echo "Singularity installed"
-} else {
-  		echo "Please ask your IT to install Singularity:
-Go here https://singularity.lbl.gov/install-linux
-"
-}
-fi
 # Check BioNextflow
 if [ -d "lib" ]; then {
 	echo "BioNextflow installed"
