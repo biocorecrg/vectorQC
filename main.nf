@@ -153,6 +153,7 @@ process trimmedQC {
  
 process assemble {
 	tag { pair_id }
+    publishDir outputAssembly, mode: 'copy'
 
     label 'big_mem_cpus'
 
@@ -171,9 +172,8 @@ process assemble {
 
 process evaluateAssembly {
 	tag { pair_id }
-    publishDir outputAssembly, mode: 'copy'
+    
     echo true
-
     label 'big_mem_cpus'
 
     input:
@@ -181,6 +181,7 @@ process evaluateAssembly {
     
     output:
    	set pair_id, file("${pair_id}_assembly_ev.fa") into scaffold_file_for_blast, scaffold_file_for_re, scaffold_file_for_parsing
+    set pair_id, file("${pair_id}_assembly_ev.fa.log") into log_assembly_for_report  
 
     script:
 	"""
@@ -295,13 +296,67 @@ process makePlot {
     set pair_id, file(blastout), file(resites), file(scaffold) from blast_out_for_plot.join(restric_file_for_graph).join(scaffold_file_for_parsing)
 
     output:
-    file("${pair_id}.png") 
+    set pair_id, file("${pair_id}.log") into log_insert_for_report  
+    file("${pair_id}.svg") 
     file("${pair_id}.gbk") 
 
     script:
 	"""
 		parse.py -n ${pair_id} -b ${blastout} -f ${scaffold} -o ${pair_id} -r ${resites}
-		\$CGVIEW -i ${pair_id}.tab  -x true -f PNG -H 1000 -o ${pair_id}.png
+		\$CGVIEW -i ${pair_id}.tab  -x true -f svg -o ${pair_id}.svg
+	"""
+}
+
+/*
+* Join logs for making a report. 
+*/
+ 
+process makePipeReport {
+	tag { pair_id }
+
+	input:
+    set pair_id, file(insert), file(assembly) from log_insert_for_report.join(log_assembly_for_report)
+
+    output:
+	file("${pair_id}_repo.txt") into pipe_report_for_join
+		
+	script:
+	"""
+		paste ${assembly} ${insert} > ${pair_id}_repo.txt
+	"""
+}
+
+/*
+* Make section of multiQC report about the pipeline results. 
+*/
+process makePipeMultiQCReport {
+	input:
+	file("report*") from pipe_report_for_join.collect()
+
+    output:
+	file("vectorQC_mqc.txt") into pipe_report_for_multiQC 
+		
+	script:
+	"""
+	echo "# plot_type: 'table'
+# section_name: 'vectorQC'
+# description: 'Results of the vectorQC pipeline. Number of contigs found, total size and inserted genes found'
+# pconfig:
+#     namespace: 'vectorQC'
+# headers:
+#     col1:
+#         title: 'Sample'
+#     col2:
+#          title: '# of scaffolds'             
+#          format: '{:,.0f}'
+#     col3:
+#          title: 'Size'
+#          format: '{:,.0f}'
+#     col4:
+#          title: 'Insert(s) found'
+Sample	col2	col3	col4
+" > vectorQC_mqc.txt
+		cat report* >> vectorQC_mqc.txt
 	"""
 }
 
@@ -323,6 +378,9 @@ process tool_report {
 	"""
 }
 
+/*
+* multiQC report
+*/
 process multiQC {
     publishDir outputMultiQC, mode: 'copy'
 
@@ -330,6 +388,7 @@ process multiQC {
     file '*' from raw_fastqc_files.mix(logTrimming_for_QC,trimmed_fastqc_files).flatten().collect()
     file 'pre_config.yaml.txt' from multiconfig
     file (tool_report_for_multiQC)
+    file (pipe_report_for_multiQC)
 
     output:
     file("multiqc_report.html") into multiQC 
@@ -339,9 +398,11 @@ process multiQC {
 	reporter.makeMultiQCreport()
 }
 
+
+
 /*
  * Mail notification
- */
+*/
 workflow.onComplete {
 
     def msg = """\
@@ -358,3 +419,4 @@ workflow.onComplete {
 
     sendMail(to: params.email, subject: "VectorQC execution", body: msg,  attach: "${outputMultiQC}/multiqc_report.html")
 }
+

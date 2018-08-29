@@ -35,10 +35,13 @@ seqname = opts.seqname
 # read input and prepare output
 fahandle	= open(fafile, 'rb')
 outhandle	= open(outfile, 'w+')
+outlhandle	= open(outfile + ".log", 'w+')
 
 num		 = 0
 seqout   = ""
+fastaout = ""
 header   = ">" + seqname
+log 	 = ""
 # read fasta file for getting the size
 with fahandle as fa:
 	for line in fa:
@@ -48,16 +51,19 @@ with fahandle as fa:
 			seqout += line.rstrip() 
 
 if (num > 1):
-	header = header + "_warning_" + str(num) + "_scaffolds," + str(len(seqout)) + "\n"
-	seqout = header + textwrap.fill(seqout, width=60)
 	print "WARNING FOUND " + str(num) + " SCAFFOLDS in " + seqname + "\n"
 else:
-	seqout = header + ","+ str(len(seqout)-127) + "\n" + textwrap.fill(seqout[:-127], width=60)
+	seqout = seqout[:-127]
+	
+seqsize = str(len(seqout))
+seqout = header + "," + seqsize + "\n" + textwrap.fill(seqout, width=60)
 	
 outhandle.write(seqout)			
 outhandle.close()		
 
-	
+outlhandle.write(seqname + "\t" + str(num) + "\t" + seqsize + "\n")	
+outlhandle.close()		
+
 
 
 

@@ -67,6 +67,7 @@ gb_trans_code = {'HYB': 'misc_feature',
 fahandle	= open(fafile, 'rb')
 outhandle	= open(outfile + ".tab", 'w+')
 outhandlegb	= open(outfile + ".gbk", 'w+')
+outhandlog	= open(outfile + ".log", 'w+')
 inhandle	= open(binfile, 'rb')
 rihandle	= open(rinfile, 'rb')
 
@@ -97,11 +98,11 @@ if (len(gbarr)>0):
 
 gbseq = gbseq + "//"
 	
-
 outstring = "#" + seqname + "\n%" + str(seqsize) + "\n" + "!strand	slot	start	stop	opacity	thickness	type	label\n"
 gbkstring = "LOCUS\t" + seqname + "\t" + str(seqsize) + " bp\tDNA\tcircular\nFEATURES\tLocation/Qualifiers\n"
 
 coords = defaultdict(dict)
+inserts = []
 # read blast tabular output file
 with inhandle as fi:
 	for line in fi:
@@ -136,9 +137,12 @@ with inhandle as fi:
 		if (featsize - qlength <= minsize and identity>=minidentity): 
 			outstring = outstring + rowsrting
 			gbkstring = outstring + rowgbstring
-
+			if (feattype == "INS"): 
+				inserts.append(featname)
+				
 		if (qstart <= maxtolerance and identity>=minidentity): # special case circular genome!!
 			if (featname not in coords): # inizialize
+				coords[featname]["feattype"]     	= feattype
 				coords[featname]["sizeBefore0"]     = 0
 				coords[featname]["sizeAfter0"]      = qend
 				coords[featname]["stringAfter0"]    = rowsrting
@@ -153,6 +157,7 @@ with inhandle as fi:
 			
 		if (qend >= seqsize - maxtolerance and identity>=minidentity):
 			if (featname not in coords): # inizialize
+				coords[featname]["feattype"]     	= feattype
 				coords[featname]["sizeBefore0"]    = seqsize - qstart
 				coords[featname]["sizeAfter0"]     = 0
 				coords[featname]["stringAfter0"]   = ""
@@ -173,9 +178,11 @@ for featname_break in coords:
 	else:
 		minsize = maxtolerance
 
-	if (size>=minsize):
+	if (size>=minsize):	
 		outstring = outstring  + coords[featname_break]["stringBefore0"] + coords[featname_break]["stringAfter0"]
 		gbkstring = gbkstring  + coords[featname_break]["stringGBBefore0"] + coords[featname_break]["stringGBAfter0"]
+		if (coords[featname_break]["feattype"] == "INS"):
+			inserts.append(featname)
 
 gbkstring = gbkstring + "ORIGIN\n" + gbseq + "\n"
 		
@@ -196,3 +203,8 @@ outhandle.close()
 
 outhandlegb.write(gbkstring)
 outhandlegb.close()
+
+if len(inserts)==0:
+	 inserts.append("-")
+outhandlog.write(", ".join(inserts))
+outhandlog.close()
