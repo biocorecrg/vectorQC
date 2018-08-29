@@ -9,15 +9,20 @@ Once the pipeline is finished you can receive a mail with attached the MultiQC r
 -----
 To run the pipeline you have to clone this repository and the corresponding docker FILE for creating the docker / singularity image. 
 
- git clone https://github.com/biocorecrg/vectorQC
+## Install 
+ 
+    git clone https://github.com/biocorecrg/vectorQC
 
-If you are using the CRG cluster you don't need to create the singularity image since it is already available.
-The config file contains information about location of the singularity image and whether to use or not singularity and requirements (like memory, CPUs etc) for every step.
+If you are using the CRG cluster you don't need to create the singularity image since it is already available. Otherwise you might want to build docker or singularity image:
 
-First of all type
- sh INSTALL.sh 
+    git clone https://github.com/biocorecrg/vectorQC_docker
+    docker build  -t biocorecrg/vectorqc .
 
-for downloading the BioNextflow library and the file containing the information about the tools
+The config file **nextflow.config** contains information about location of the singularity image and whether to use or not singularity and requirements (like memory, CPUs etc) for every step. You might want to change the part of container use in case you use **docker**.
+
+     sh INSTALL.sh 
+
+for downloading the **BioNextflow librar** and the file containing the information about the tools
 
 **Important!! Check if your nextflow is updated to the latest version!!! (type nextflow self-update)**
 
