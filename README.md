@@ -6,25 +6,35 @@ Both Docker and singularity files are in https://github.com/biocorecrg/vectorQC_
 
 Once the pipeline is finished you can receive a mail with attached the MultiQC report.
 
+## Requisites
+You need either a **docker** (https://www.docker.com/) or **singularity** (https://www.sylabs.io/) linux containers and **nextflow** workflow manager (https://www.nextflow.io/). To install nextflow:
+
+     curl -s https://get.nextflow.io | bash 
+
 -----
 To run the pipeline you have to clone this repository and the corresponding docker FILE for creating the docker / singularity image. 
 
- git clone https://github.com/biocorecrg/vectorQC
+## Install 
+ 
+    git clone https://github.com/biocorecrg/vectorQC
 
-If you are using the CRG cluster you don't need to create the singularity image since it is already available.
-The config file contains information about location of the singularity image and whether to use or not singularity and requirements (like memory, CPUs etc) for every step.
+If you are using the CRG cluster you don't need to create the singularity image since it is already available. Otherwise you might want to build docker or singularity image:
 
-First of all type
- sh INSTALL.sh 
+    git clone https://github.com/biocorecrg/vectorQC_docker
+    docker build  -t biocorecrg/vectorqc .
 
-for downloading the BioNextflow library and the file containing the information about the tools
+The config file **nextflow.config** contains information about location of the singularity image and whether to use or not singularity and requirements (like memory, CPUs etc) for every step. You might want to change the part of container use in case you use **docker**.
+
+     sh INSTALL.sh 
+
+for downloading the **BioNextflow library** and the file containing the information about the tools
 
 **Important!! Check if your nextflow is updated to the latest version!!! (type nextflow self-update)**
 
 ## Parameters
 To check the required parameters you can type nextflow run. Params are specified in **params.config** file.
 
-**./main.nf --help**
+**nextflow run main.nf --help**
 
 |parameter name         | value|
 |---------------------------------|------------------------|
@@ -82,4 +92,12 @@ This parameter is useful to receive a mail once the process is finished / crashe
 
 ## The simulator
 In the folder **simu** there is another NF pipeline for simulating reads starting from vector sequences. It is basically a wrapper of **wgsim** tool adapted to generate sequence from circular genomes. 
+
+-----
+## Generated plots:
+![vector ploth](https://github.com/biocorecrg/vectorQC/blob/master/plots/pTAZ.svg)
+
+## Report
+![multiQC report](https://github.com/biocorecrg/vectorQC/blob/master/plots/report_example.png)
+
 
