@@ -83,3 +83,11 @@ This parameter is useful to receive a mail once the process is finished / crashe
 ## The simulator
 In the folder **simu** there is another NF pipeline for simulating reads starting from vector sequences. It is basically a wrapper of **wgsim** tool adapted to generate sequence from circular genomes. 
 
+-----
+## Generated plots:
+![vector ploth](https://github.com/biocorecrg/vectorQC/blob/master/plots/pTAZ.svg)
+
+## Report
+![multiQC report](https://github.com/biocorecrg/vectorQC/blob/master/plots/report_example.png)
+
+
