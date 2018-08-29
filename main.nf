@@ -289,7 +289,7 @@ process runRestrict {
  
 process makePlot {
 	tag { pair_id }
-    publishDir outputPlot, mode: 'copy', pattern: '*.png' 
+    publishDir outputPlot, mode: 'copy', pattern: '*.svg' 
     publishDir outputGBK, mode: 'copy', pattern: '*.gbk'
 
     input:
