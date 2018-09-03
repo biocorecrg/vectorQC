@@ -19,14 +19,20 @@ To run the pipeline you have to clone this repository and the corresponding dock
 ## Install 
  
     git clone https://github.com/biocorecrg/vectorQC
-
-If you are using the CRG cluster you don't need to create the singularity image since it is already available. Otherwise you might want to build docker or singularity image:
+If you are using the CRG cluster you don't need to create the singularity image since it is already available. Otherwise you might want to build docker **or** singularity image. To download the docker and singulairty file:
 
     git clone https://github.com/biocorecrg/vectorQC_docker
+    cd vectorQC_docker
+
+To build the docker image:
+    
     docker build  -t biocorecrg/vectorqc .
+
+or to build the singularity one:
+    
     singularity build vectorQC.simg Singularity
 
-The config file **nextflow.config** contains information about location of the singularity image and whether to use or not singularity and requirements (like memory, CPUs etc) for every step. You might want to change the part of container use in case you use **docker**.
+The config file **nextflow.config** contains information about location of the singularity image and whether to use or not singularity and requirements (like memory, CPUs etc) for every step. You might want to change the part of container use in case you use **docker** by un-commenting the corresponding portion.
 
      sh INSTALL.sh 
 
@@ -142,6 +148,7 @@ Output folder
 Mail address for receiving a mail once the process is finished / crashed.
 
 
-### Running the simulator
+## Running the simulator and the test examples
      nextflow run simulate/simulate.nf 
+     nextflow run main.nf
      
