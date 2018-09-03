@@ -155,4 +155,8 @@ Mail address for receiving a mail once the process is finished / crashed.
 ## Running the simulator and the test examples
      nextflow run simulate/simulate.nf 
      nextflow run main.nf
-     
+
+## DAG graph
+![DAG graph](https://github.com/biocorecrg/vectorQC/blob/master/plots/grafico.png)
+
+
