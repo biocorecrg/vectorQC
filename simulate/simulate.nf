@@ -37,7 +37,6 @@ output (output folder)                          : ${params.output}
 fold                                            : ${params.fold}
 outerd (outer distance)                         : ${params.outerd}
 stdev (outer distance standard error)           : ${params.stdev}
-inserts                                         : ${params.inserts}
 size                                            : ${params.size}
 """
 
