@@ -56,7 +56,7 @@ To check the required parameters you can type nextflow run. Params are specified
 |tooldb                       |"conf_tools.txt"|
 |email for notification       |yourmail@yourdomain|
 
----------
+-----
 
 ### Reads
 **!!Important!!** when specifying the parameters **reads** by command line you should use **"quotation marks"** if not the * will be translated in the first file. Be careful with the way you name the file since filenames can vary among facilities, machines etc.
@@ -90,6 +90,7 @@ It is the text file used for generating a report with used tools. It is automati
 ### Email
 This parameter is useful to receive a mail once the process is finished / crashed.
 
+-----
 ## Running the pipeline
 
     nextflow run main.nf > log.txt
@@ -133,6 +134,8 @@ In the folder **simu** there is another NF pipeline for simulating reads startin
 |output                       |output|
 |email for notification       |yourmail@yourdomain|
 
+-----
+
 #### Seqs
 Fasta sequences with vectors.
 
@@ -151,11 +154,12 @@ Output folder
 ### Email
 Mail address for receiving a mail once the process is finished / crashed.
 
-
+-----
 ## Running the simulator and the test examples
      nextflow run simulate/simulate.nf 
      nextflow run main.nf
 
+-----
 ## DAG graph
 ![DAG graph](https://github.com/biocorecrg/vectorQC/blob/master/plots/grafico.png)
 
