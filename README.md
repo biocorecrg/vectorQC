@@ -136,10 +136,10 @@ In the folder **simu** there is another NF pipeline for simulating reads startin
 
 -----
 
-#### Seqs
+### Seqs
 Fasta sequences with vectors.
 
-#### Fold
+### Fold
 Number of time that the vector should be covered by the reads.
 
 ### Outerd
