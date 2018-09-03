@@ -69,13 +69,17 @@ This is the yaml file required by multiQC to group together the information. You
 
 ### Features
 The fasta file downloaded by **Plasmapper** tool (http://wishart.biology.ualberta.ca/PlasMapper/). The fasta header is formatted in this way:
+
 *lpp_promoter[PRO]{lpp},30 bases, 1123 checksum.* 
--[] is a category. HYB (hyper activation binding doamin), LOC (locus), ORI (Origin of replication), OTH (other gene), PRO (promoter), REG (regulatory sequence), REP (reporter gene), SEL (gene for selection), TAG (affinity TAG) and TER (terminator).
--{} contains a small string of the sequence decription that is shown in the ploi
--Sequence length is after *{},* 
+
+- [] is a category. HYB (hyper activation binding doamin), LOC (locus), ORI (Origin of replication), OTH (other gene), PRO (promoter), REG (regulatory sequence), REP (reporter gene), SEL (gene for selection), TAG (affinity TAG) and TER (terminator).
+- {} contains a small string of the sequence decription that is shown in the ploi
+- Sequence length is after *{},* 
 
 ### Inserts
-A custom fasta file with the header containing the name of the inserted genes / piece of DNA.
+A custom fasta file with the header containing the name of the inserted genes / piece of DNA. An example is in:
+     
+    examples/inserts/genes.fa
 
 ### Output
 Is a parameter that specify the output folder. It is useful in case you want to have different run changing some parameters. Default is **output**.
