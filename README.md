@@ -1,6 +1,6 @@
 # ![vectorQC](https://github.com/CRG-CNAG/BioCoreMiscOpen/blob/master/logo/biocore-logo_small.png) vectorQC 0.1
 
-This pipeline analyzes the result of MIseq sequencing of a collection of vectors. The input is a pair of fastq files per sample (vector) and is specified in **params.config** file. The default **feature db** file is obtained by the tool PlasMapper (http://wishart.biology.ualberta.ca/PlasMapper/) while the **ReBase** is the database for restriction enzymes (http://rebase.neb.com/rebase/rebase.html).
+This Nextflow pipeline analyzes the result of MIseq sequencing of a collection of vectors. The input is a pair of fastq files per sample (vector) and is specified in **params.config** file. The default **feature db** file is obtained by the tool PlasMapper (http://wishart.biology.ualberta.ca/PlasMapper/) while the **ReBase** is the database for restriction enzymes (http://rebase.neb.com/rebase/rebase.html).
 
 Both Docker and singularity files are in https://github.com/biocorecrg/vectorQC_docker repository
 
