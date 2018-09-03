@@ -143,5 +143,5 @@ Mail address for receiving a mail once the process is finished / crashed.
 
 
 ### Running the simulator
-     nextflow run simulate.nf
+     nextflow run simulate/simulate.nf 
      
