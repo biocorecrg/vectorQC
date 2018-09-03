@@ -22,6 +22,7 @@ If you are using the CRG cluster you don't need to create the singularity image 
 
     git clone https://github.com/biocorecrg/vectorQC_docker
     docker build  -t biocorecrg/vectorqc .
+    singularity build vectorQC.simg Singularity
 
 The config file **nextflow.config** contains information about location of the singularity image and whether to use or not singularity and requirements (like memory, CPUs etc) for every step. You might want to change the part of container use in case you use **docker**.
 
@@ -34,7 +35,7 @@ for downloading the **BioNextflow library** and the file containing the informat
 ## Parameters
 To check the required parameters you can type nextflow run. Params are specified in **params.config** file.
 
-**nextflow run main.nf --help**
+    nextflow run main.nf --help
 
 |parameter name         | value|
 |---------------------------------|------------------------|
@@ -45,12 +46,12 @@ To check the required parameters you can type nextflow run. Params are specified
 |inserts                      |./test/inserts/genes.fa|
 |output (output folder)       |output|
 |tooldb                       |"conf_tools.txt"|
-|email for notification       |yourmail@crg.eu|
+|email for notification       |yourmail@yourdomain|
 
 ---------
 
 ### Reads
-**!!Important!!** when specifying the parameters **reads** you should use **"quotation marks"** if not the * will be translated in the first file. Be careful with the way you name the file since filenames can vary among facilities, machines etc.
+**!!Important!!** when specifying the parameters **reads** by command line you should use **"quotation marks"** if not the * will be translated in the first file. Be careful with the way you name the file since filenames can vary among facilities, machines etc.
 
 ### Common enzymes
 A list of restriction enzymes that are supposed to cut within our vectors. 
@@ -75,8 +76,16 @@ Is a parameter that specify the output folder. It is useful in case you want to 
 It is the text file used for generating a report with used tools. It is automatically downloaded when is run INSTALL.sh
 
 ### Email
-This parameter is useful to receive a mail once the process is finished / crashed. Default is a fake mail address.
+This parameter is useful to receive a mail once the process is finished / crashed.
 
+## Running the pipeline
+
+    nextflow run main.nf > log.txt
+
+Some useful nextflow parameter:
+
+1. -bg will send the process in background
+1. -resume will resume a previous failed run
 
 ---------
 
@@ -97,7 +106,40 @@ This parameter is useful to receive a mail once the process is finished / crashe
 ## Report
 ![multiQC report](https://github.com/biocorecrg/vectorQC/blob/master/plots/report_example.png)
 
-
 ------
-## The simulator
-In the folder **simu** there is another NF pipeline for simulating reads starting from vector sequences. It is basically a wrapper of **wgsim** tool adapted to generate sequence from circular genomes. In the folder **examples** are some inserts and vectors.
+## The simulator (and test data)
+In the folder **simu** there is another NF pipeline for simulating reads starting from vector sequences. It is basically a wrapper of **wgsim** tool adapted to generate sequence from circular genomes. In the folder **examples** there are some inserted genes and vectors.
+
+### Parameters
+|parameter name         | value|
+|---------------------------------|------------------------|
+|seqs                         |"$baseDir/../test/vectors/\*.fa"|
+|fold                         |3000|
+|outerd                       |600|
+|stdev                        |100|
+|size                         |300|
+|output                       |output|
+|email for notification       |yourmail@yourdomain|
+
+#### Seqs
+Fasta sequences with vectors.
+
+#### Fold
+Number of time that the vector should be covered by the reads.
+
+### Outerd
+Outer read distance.
+
+### Stdev
+Standard deviation of the outer read distance
+
+### Output
+Output folder
+
+### Email
+Mail address for receiving a mail once the process is finished / crashed.
+
+
+### Running the simulator
+     nextflow run simulate.nf
+     
