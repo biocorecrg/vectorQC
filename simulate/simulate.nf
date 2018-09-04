@@ -16,8 +16,8 @@ vectorQC pipeline for Bioinformatics Core @ CRG
 version = '0.1'
 
 /*
-* Input parameters: read pairs, db fasta file, 
-*/
+ * Input parameters: read pairs, db fasta file, 
+ */
 
 params.help            = false
 params.resume          = false
@@ -58,19 +58,19 @@ Channel
  * Run simulate NGS reads on singular vectors
  */
 process simulateVectors {
-	tag { sequence }
+    tag { sequence }
     publishDir params.output, mode: 'copy'
 
     input:
     set id, file(sequence) from sequences
 
     output:
-   	file("*.fq") 
+    file("*.fq") 
 
     script:
-	"""
-		simulateCircular.py -i ${sequence} -o ${id} -x ${params.fold} -d ${params.outerd} -e ${params.stdev} -s ${params.size}
-	"""
+    """
+        simulateCircular.py -i ${sequence} -o ${id} -x ${params.fold} -d ${params.outerd} -e ${params.stdev} -s ${params.size}
+    """
 }
 
 
