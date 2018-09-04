@@ -216,7 +216,7 @@ process makeInsertDB {
     
     """
         parseInserts.py -i ${params.inserts} -o  whole_db_pipe.fasta
-         if [ `echo ${features_file} | grep ".gz"` ]; then 
+        if [ `echo ${features_file} | grep ".gz"` ]; then 
             zcat ${features_file} >> whole_db_pipe.fasta
         else 
             cat zcat ${features_file} >> whole_db_pipe.fasta
