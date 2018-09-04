@@ -106,7 +106,7 @@ process raw_fastqc {
     file(read) from reads_for_fastqc
 
     output:
-       file("*_fastqc.*") into raw_fastqc_files
+    file("*_fastqc.*") into raw_fastqc_files
 
     script:
     def qc = new QualityChecker(input:read, cpus:task.cpus)
