@@ -185,7 +185,8 @@ for featname_break in coords:
 			inserts.append(featname)
 
 gbkstring = gbkstring + "ORIGIN\n" + gbseq + "\n"
-		
+
+#parsing Restrict file from EMBOSS. Extracts the 5prime / 3prime fields 
 with rihandle as fi:
 	for line in fi:
 		if (line[0] != "#"):
@@ -196,7 +197,7 @@ with rihandle as fi:
 					strand = "reverse"
 				else:
 					strand = "forward"	
-				outstring = outstring + strand + "\t2\t" + fields[1] + "\t" + fields[2] + "\t1\t1\tunique_restriction_site\t" + fields[4] + "\n"
+				outstring = outstring + strand + "\t2\t" + fields[6] + "\t" + fields[7] + "\t1\t1\tunique_restriction_site\t" + fields[4] + "\n"
 
 outhandle.write(outstring)
 outhandle.close()
