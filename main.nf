@@ -16,8 +16,8 @@ vectorQC pipeline for Bioinformatics Core @ CRG
 version = '0.1'
 
 /*
-* Input parameters: read pairs, db fasta file, 
-*/
+ * Input parameters: read pairs, db fasta file, etc
+ */
 
 params.help            = false
 params.resume          = false
@@ -71,14 +71,19 @@ outputMultiQC    = "${params.output}/multiQC"
 outputReport    = file("${outputMultiQC}/multiqc_report.html")
 
 
-
-// move old multiQCreport in case it already exists 
+/*
+ * move old multiQCreport in case it already exists 
+ */
+ 
 if( outputReport.exists() ) {
   log.info "Moving old report to multiqc_report.html multiqc_report.html.old"
   outputReport.moveTo("${outputMultiQC}/multiqc_report.html.old")
 }
 
-// Create channels for sequences data
+/*
+ * Create channels for sequences data 
+ */
+ 
 Channel
     .fromFilePairs( params.reads)                                       
     .ifEmpty { error "Cannot find any reads matching: ${params.reads}" }
@@ -161,7 +166,7 @@ process assemble {
     set pair_id, file(readsA), file(readsB) from  filtered_reads_for_assembly.flatten().collate( 3 )
 
     output:
-       set pair_id, file("${pair_id}_assembly.fa") into scaffold_for_evaluation
+    set pair_id, file("${pair_id}_assembly.fa") into scaffold_for_evaluation
 
     script:
     """
@@ -170,7 +175,12 @@ process assemble {
     """
 }
 
-process evaluateAssembly {
+
+/*
+ * evaluate assembly
+ */
+ 
+ process evaluateAssembly {
     tag { pair_id }
     
     echo true
@@ -180,7 +190,7 @@ process evaluateAssembly {
     set pair_id, file(scaffolds) from  scaffold_for_evaluation
     
     output:
-       set pair_id, file("${pair_id}_assembly_ev.fa") into scaffold_file_for_blast, scaffold_file_for_re, scaffold_file_for_parsing
+    set pair_id, file("${pair_id}_assembly_ev.fa") into scaffold_file_for_blast, scaffold_file_for_re, scaffold_file_for_parsing
     set pair_id, file("${pair_id}_assembly_ev.fa.log") into log_assembly_for_report  
 
     script:
@@ -232,7 +242,7 @@ process makeblastdb {
     file(features_file) from fasta_for_blast_db
 
     output:
-       set "blast_db.fasta", file("blast_db.fasta*") into blastdb_files
+    set "blast_db.fasta", file("blast_db.fasta*") into blastdb_files
 
     script:
     def aligner = new NGSaligner(reference_file:features_file, index:"blast_db.fasta", dbtype:"nucl")
@@ -308,8 +318,8 @@ process makePlot {
 }
 
 /*
-* Join logs for making a report. 
-*/
+ * Join logs for making a report. 
+ */
  
 process makePipeReport {
     tag { pair_id }
@@ -327,8 +337,8 @@ process makePipeReport {
 }
 
 /*
-* Make section of multiQC report about the pipeline results. 
-*/
+ * Make section of multiQC report about the pipeline results. 
+ */
 process makePipeMultiQCReport {
     input:
     file("report*") from pipe_report_for_join.collect()
@@ -361,8 +371,8 @@ Sample    col2    col3    col4
 }
 
 /*
-* Make section of multiQC report about the tools used. 
-*/
+ * Make section of multiQC report about the tools used. 
+ */
  
 process tool_report {
 
@@ -379,8 +389,8 @@ process tool_report {
 }
 
 /*
-* multiQC report
-*/
+ * multiQC report
+ */
 process multiQC {
     publishDir outputMultiQC, mode: 'copy'
 
@@ -402,7 +412,7 @@ process multiQC {
 
 /*
  * Mail notification
-*/
+ */
 workflow.onComplete {
 
     def msg = """\
