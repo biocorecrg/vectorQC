@@ -1,6 +1,6 @@
 # ![vectorQC](https://github.com/CRG-CNAG/BioCoreMiscOpen/blob/master/logo/biocore-logo_small.png) vectorQC 0.1
 
-This pipeline analyzes the result of MIseq sequencing of a collection of vectors. The input is a pair of fastq files per sample (vector) and is specified in **params.config** file. The default **feature db** file is obtained by the tool PlasMapper (http://wishart.biology.ualberta.ca/PlasMapper/) while the **ReBase** is the database for restriction enzymes (http://rebase.neb.com/rebase/rebase.html).
+This Nextflow pipeline analyzes the result of MIseq sequencing of a collection of vectors. The input is a pair of fastq files per sample (vector) and is specified in **params.config** file. The default **feature db** file is obtained by the tool PlasMapper (http://wishart.biology.ualberta.ca/PlasMapper/) while the **ReBase** is the database for restriction enzymes (http://rebase.neb.com/rebase/rebase.html).
 
 Both Docker and singularity files are in https://github.com/biocorecrg/vectorQC_docker repository
 
@@ -19,14 +19,20 @@ To run the pipeline you have to clone this repository and the corresponding dock
 ## Install 
  
     git clone https://github.com/biocorecrg/vectorQC
-
-If you are using the CRG cluster you don't need to create the singularity image since it is already available. Otherwise you might want to build docker or singularity image:
+If you are using the CRG cluster you don't need to create the singularity image since it is already available. Otherwise you might want to build docker **or** singularity image. To download the docker and singulairty file:
 
     git clone https://github.com/biocorecrg/vectorQC_docker
+    cd vectorQC_docker
+
+To build the docker image:
+    
     docker build  -t biocorecrg/vectorqc .
+
+or to build the singularity one:
+    
     singularity build vectorQC.simg Singularity
 
-The config file **nextflow.config** contains information about location of the singularity image and whether to use or not singularity and requirements (like memory, CPUs etc) for every step. You might want to change the part of container use in case you use **docker**.
+The config file **nextflow.config** contains information about location of the singularity image and whether to use or not singularity and requirements (like memory, CPUs etc) for every step. You might want to change the part of container use in case you use **docker** by un-commenting the corresponding portion.
 
      sh INSTALL.sh 
 
@@ -50,7 +56,7 @@ To check the required parameters you can type nextflow run. Params are specified
 |tooldb                       |"conf_tools.txt"|
 |email for notification       |yourmail@yourdomain|
 
----------
+-----
 
 ### Reads
 **!!Important!!** when specifying the parameters **reads** by command line you should use **"quotation marks"** if not the * will be translated in the first file. Be careful with the way you name the file since filenames can vary among facilities, machines etc.
@@ -63,13 +69,17 @@ This is the yaml file required by multiQC to group together the information. You
 
 ### Features
 The fasta file downloaded by **Plasmapper** tool (http://wishart.biology.ualberta.ca/PlasMapper/). The fasta header is formatted in this way:
+
 *lpp_promoter[PRO]{lpp},30 bases, 1123 checksum.* 
--[] is a category. HYB (hyper activation binding doamin), LOC (locus), ORI (Origin of replication), OTH (other gene), PRO (promoter), REG (regulatory sequence), REP (reporter gene), SEL (gene for selection), TAG (affinity TAG) and TER (terminator).
--{} contains a small string of the sequence decription that is shown in the ploi
--Sequence length is after *{},* 
+
+- [] is a category. HYB (hyper activation binding doamin), LOC (locus), ORI (Origin of replication), OTH (other gene), PRO (promoter), REG (regulatory sequence), REP (reporter gene), SEL (gene for selection), TAG (affinity TAG) and TER (terminator).
+- {} contains a small string of the sequence decription that is shown in the ploi
+- Sequence length is after *{},* 
 
 ### Inserts
-A custom fasta file with the header containing the name of the inserted genes / piece of DNA.
+A custom fasta file with the header containing the name of the inserted genes / piece of DNA. An example is in:
+     
+    examples/inserts/genes.fa
 
 ### Output
 Is a parameter that specify the output folder. It is useful in case you want to have different run changing some parameters. Default is **output**.
@@ -80,6 +90,7 @@ It is the text file used for generating a report with used tools. It is automati
 ### Email
 This parameter is useful to receive a mail once the process is finished / crashed.
 
+-----
 ## Running the pipeline
 
     nextflow run main.nf > log.txt
@@ -123,10 +134,12 @@ In the folder **simu** there is another NF pipeline for simulating reads startin
 |output                       |output|
 |email for notification       |yourmail@yourdomain|
 
-#### Seqs
+-----
+
+### Seqs
 Fasta sequences with vectors.
 
-#### Fold
+### Fold
 Number of time that the vector should be covered by the reads.
 
 ### Outerd
@@ -141,7 +154,13 @@ Output folder
 ### Email
 Mail address for receiving a mail once the process is finished / crashed.
 
+-----
+## Running the simulator and the test examples
+     nextflow run simulate/simulate.nf 
+     nextflow run main.nf
 
-### Running the simulator
-     nextflow run simulate.nf
-     
+-----
+## DAG graph
+![DAG graph](https://github.com/biocorecrg/vectorQC/blob/master/plots/grafico.png)
+
+
