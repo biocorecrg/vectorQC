@@ -408,12 +408,18 @@ process multiQC {
     reporter.makeMultiQCreport()
 }
 
-
+if (params.help) {
+    log.info 'This is the Biocore\'s vectorQC pipeline'
+    log.info '\n'
+    exit 1
+}
 
 /*
  * Mail notification
  */
-workflow.onComplete {
+
+if (params.mail != "yourmail@yourdomain" and != "") { 
+    workflow.onComplete {
 
     def msg = """\
         Pipeline execution summary
@@ -427,6 +433,6 @@ workflow.onComplete {
         """
         .stripIndent()
 
-    sendMail(to: params.email, subject: "VectorQC execution", body: msg,  attach: "${outputMultiQC}/multiqc_report.html")
+        sendMail(to: params.email, subject: "VectorQC execution", body: msg,  attach: "${outputMultiQC}/multiqc_report.html")
+    }
 }
-
