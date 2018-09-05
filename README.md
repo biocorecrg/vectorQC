@@ -8,6 +8,7 @@ Both Docker and singularity files are in https://github.com/biocorecrg/vectorQC_
 
 Once the pipeline is finished you can receive a mail with attached the MultiQC report.
 
+
 ## Requisites
 You need either a **docker** (https://www.docker.com/) or **singularity** (https://www.sylabs.io/) linux containers and **nextflow** workflow manager (https://www.nextflow.io/). Nextflow will need both **Java** and **JAVA developer kit (JDK)** to be installed in your computer.
 
