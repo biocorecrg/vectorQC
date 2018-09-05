@@ -418,7 +418,7 @@ if (params.help) {
  * Mail notification
  */
 
-if (params.mail != "yourmail@yourdomain" and != "") { 
+if (params.mail != "yourmail@yourdomain" && params.mail != "") { 
     workflow.onComplete {
 
     def msg = """\
