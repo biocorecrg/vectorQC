@@ -3,7 +3,7 @@ language: java
 jdk: openjdk8
 services: docker
 
-install:
+install: travis_wait 30 mvn install
   # Install Nextflow
   - mkdir nextflow
   - cd nextflow
