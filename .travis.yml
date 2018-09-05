@@ -19,8 +19,6 @@ install:
   # Make test input
   - nextflow run simulate/simulate.nf 
 
+# Run the pipeline
 script:
-  # Lint the pipeline code
-  - "vectorQC lint ${TRAVIS_BUILD_DIR}"
-  # Run, build reference genome
-  - nextflow run ${TRAVIS_BUILD_DIR}
+   - nextflow run main.nf 
