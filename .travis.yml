@@ -8,7 +8,7 @@ install:
   - mkdir nextflow
   - cd nextflow
   - wget -qO- get.nextflow.io | bash
-  - sudo ln -s nextflow /usr/local/bin/nextflow
+  - sudo ln -s $PWD/nextflow /usr/local/bin/nextflow
 
 # Install vectorQC
   - git clone https://github.com/biocorecrg/vectorQC.git
