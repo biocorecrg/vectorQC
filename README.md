@@ -1,4 +1,4 @@
-# ![vectorQC](https://github.com/CRG-CNAG/BioCoreMiscOpen/blob/master/logo/biocore-logo_small.png) vectorQC 0.1
+# ![vectorQC](https://github.com/CRG-CNAG/BioCoreMiscOpen/blob/master/logo/biocore-logo_small.png) vectorQC 1.0
 
 [![DOI](https://zenodo.org/badge/144697659.svg)](https://zenodo.org/badge/latestdoi/144697659)
 
