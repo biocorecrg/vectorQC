@@ -8,6 +8,7 @@ install:
   - mkdir nextflow
   - cd nextflow
   - wget -qO- get.nextflow.io | bash
+  - ln -s nextflow /usr/local/bin/nextflow
 
 # Install vectorQC
   - git clone https://github.com/biocorecrg/vectorQC.git
@@ -16,10 +17,10 @@ install:
  
 # Make simulated test input
   # Make test input
-  - /usr/local/bin/nextflow run simulate/simulate.nf 
+  - nextflow run simulate/simulate.nf 
 
 script:
   # Lint the pipeline code
   - "vectorQC lint ${TRAVIS_BUILD_DIR}"
   # Run, build reference genome
-  - /usr/local/bin/nextflow run ${TRAVIS_BUILD_DIR}
+  - nextflow run ${TRAVIS_BUILD_DIR}
