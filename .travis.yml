@@ -1,0 +1,25 @@
+sudo: required
+language: java
+jdk: openjdk8
+services: docker
+
+install:
+  # Install Nextflow
+  - mkdir nextflow
+  - cd nextflow
+  - wget -qO- get.nextflow.io | bash
+
+# Install vectorQC
+  - git clone https://github.com/biocorecrg/vectorQC.git
+  - cd vectorQC
+  - sh INSTALL.sh
+ 
+# Make simulated test input
+  # Make test input
+  - nextflow run simulate/simulate.nf 
+
+script:
+  # Lint the pipeline code
+  - "vectorQC lint ${TRAVIS_BUILD_DIR}"
+  # Run, build reference genome
+  - nextflow run ${TRAVIS_BUILD_DIR}
