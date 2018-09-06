@@ -1,7 +1,13 @@
 #!/usr/bin/env nextflow
 
-// Copyright (c) 2018, Centre for Genomic Regulation (CRG) and the authors.
 
+/* 
+ * Copyright (c) 2018, Centre for Genomic Regulation (CRG) 
+ * 
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ */
 
 
 /*
@@ -225,11 +231,6 @@ process makeInsertDB {
 
 }
 
-if (whole_db_fasta) {
-    fasta_for_blast_db = whole_db_fasta
-} else {
-    fasta_for_blast_db = featuresdb
-}
 
 /*
  * Make blast db
@@ -239,7 +240,7 @@ process makeblastdb {
     tag "$features_file"
     
     input:
-    file(features_file) from fasta_for_blast_db
+    file(features_file) from (params.inserts ? whole_db_fasta : featuresdb)
 
     output:
     set "blast_db.fasta", file("blast_db.fasta*") into blastdb_files
