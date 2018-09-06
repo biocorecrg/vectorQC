@@ -99,7 +99,7 @@ Channel
  * Run FastQC on raw data
  */
 process raw_fastqc {
-    tag { read }
+    tag "$read"
     publishDir outputQC, mode: 'copy'
 
     input:
@@ -118,7 +118,7 @@ process raw_fastqc {
  */ 
  
 process trimReads {
-    tag { pair_id }
+    tag "$pair_id"
         
     input:
     set pair_id, file(reads) from (read_files_for_trimming)
@@ -137,7 +137,7 @@ process trimReads {
  * FastQC
  */ 
 process trimmedQC {
-    tag { filtered_read }
+    tag "$filtered_read"
 
     afterScript 'mv *_fastqc.zip `basename *_fastqc.zip _fastqc.zip`_filt_fastqc.zip'
 
@@ -157,7 +157,7 @@ process trimmedQC {
  */
  
 process assemble {
-    tag { pair_id }
+    tag "$pair_id"
     publishDir outputAssembly, mode: 'copy'
 
     label 'big_mem_cpus'
@@ -181,7 +181,7 @@ process assemble {
  */
  
  process evaluateAssembly {
-    tag { pair_id }
+    tag "$pair_id"
     
     echo true
     label 'big_mem_cpus'
@@ -203,7 +203,7 @@ process assemble {
  * joine db files
  */
 process makeInsertDB {
-    tag { params.inserts }
+    tag "$params.inserts"
 
     when:
     params.inserts
@@ -236,7 +236,7 @@ if (whole_db_fasta) {
  */
  
 process makeblastdb {
-    tag { features_file }
+    tag "$features_file"
     
     input:
     file(features_file) from fasta_for_blast_db
@@ -254,7 +254,7 @@ process makeblastdb {
  */
  
 process runBlast {
-    tag { pair_id }
+    tag "$pair_id"
     publishDir outputBlast
 
     label 'big_mem_cpus'
@@ -277,7 +277,7 @@ process runBlast {
  */
  
 process runRestrict {
-    tag { pair_id }
+    tag "$pair_id"
     publishDir outputRE
 
     input:
@@ -298,7 +298,7 @@ process runRestrict {
  */
  
 process makePlot {
-    tag { pair_id }
+    tag "$pair_id"
     publishDir outputPlot, mode: 'copy', pattern: '*.svg' 
     publishDir outputGBK, mode: 'copy', pattern: '*.gbk'
 
@@ -322,7 +322,7 @@ process makePlot {
  */
  
 process makePipeReport {
-    tag { pair_id }
+    tag "$pair_id"
 
     input:
     set pair_id, file(insert), file(assembly) from log_insert_for_report.join(log_assembly_for_report)
