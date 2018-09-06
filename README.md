@@ -20,29 +20,16 @@ You need either a **Docker** (https://www.docker.com/) or **Singularity** (https
 -----
 To run the pipeline you have to clone this repository and the corresponding Docker FILE for creating the Docker / Singularity image. 
 
-## Install 
+## Install (current version 1.0)
  
-    git clone https://github.com/biocorecrg/vectorQC
-If you are using the CRG cluster you don't need to create the Singularity image since it is already available. Otherwise you might want to build Docker **or** Singularity image. To download the Docker and singulairty file:
+    curl -s -L https://github.com/biocorecrg/vectorQC/archive/v1.0.tar.gz
+    tar -zvxf v1.0.tar.gz
 
-    git clone https://github.com/biocorecrg/vectorQC_docker
-    cd vectorQC_docker
-
-To build the Docker image:
-    
-    docker build  -t biocorecrg/vectorqc .
-
-or to build the Singularity one:
-    
-    singularity build vectorQC.simg Singularity
-
-The config file **nextflow.config** contains information about location of the Singularity image and whether to use or not Singularity and requirements (like memory, CPUs etc) for every step. You might want to change the part of container use in case you use **Docker** by un-commenting the corresponding portion.
+The config file **nextflow.config** contains information about location of the Singularity image and whether to use or not Singularity and requirements (like memory, CPUs etc) for every step. You might want to change the part of container use in case you want to use **Docker** or **Singularity** by un-commenting the corresponding portion.
 
      sh INSTALL.sh 
 
 for downloading the **BioNextflow library** and the file containing the information about the tools
-
-**Important!! Check if your nextflow is updated to the latest version!!! (type nextflow self-update)**
 
 ## Parameters
 To check the required parameters you can type nextflow run. Params are specified in **params.config** file.
