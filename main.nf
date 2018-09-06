@@ -418,7 +418,11 @@ if (params.help) {
  * Mail notification
  */
 
-if (params.mail != "yourmail@yourdomain" && params.mail != "") { 
+if (params.email == "yourmail@yourdomain" || params.email == "") { 
+    log.info 'Skipping the email\n'
+}
+else {
+    log.info "Sending the email to ${params.email}\n"
 
     workflow.onComplete {
 
@@ -437,3 +441,5 @@ if (params.mail != "yourmail@yourdomain" && params.mail != "") {
         sendMail(to: params.email, subject: "VectorQC execution", body: msg,  attach: "${outputMultiQC}/multiqc_report.html")
     }
 }
+
+
