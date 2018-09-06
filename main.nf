@@ -225,11 +225,6 @@ process makeInsertDB {
 
 }
 
-if (whole_db_fasta) {
-    fasta_for_blast_db = whole_db_fasta
-} else {
-    fasta_for_blast_db = featuresdb
-}
 
 /*
  * Make blast db
@@ -239,7 +234,7 @@ process makeblastdb {
     tag "$features_file"
     
     input:
-    file(features_file) from fasta_for_blast_db
+    file(features_file) from (params.inserts ? whole_db_fasta : featuresdb)
 
     output:
     set "blast_db.fasta", file("blast_db.fasta*") into blastdb_files
