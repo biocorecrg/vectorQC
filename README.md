@@ -2,10 +2,10 @@
 
 [![DOI](https://zenodo.org/badge/144697659.svg)](https://zenodo.org/badge/latestdoi/144697659)
 [![Build Status](https://travis-ci.org/biocorecrg/vectorQC.svg?branch=master)](https://travis-ci.org/biocorecrg/vectorQC)
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg) (https://opensource.org/licenses/MPL-2.0)
+[![Nextflow version](https://img.shields.io/badge/nextflow-%E2%89%A50.31.0-brightgreen.svg)(https://www.nextflow.io/)
 
 This Nextflow pipeline analyzes the result of MIseq sequencing of a collection of vectors (300 bp x 2 paired ends). The input is a pair of fastq files per sample (vector) and is specified in **params.config** file. The default **feature db** file is obtained by the tool PlasMapper (http://wishart.biology.ualberta.ca/PlasMapper/) while the **ReBase** is the database for restriction enzymes (http://rebase.neb.com/rebase/rebase.html).
-
-Both Docker and Singularity files are in https://github.com/biocorecrg/vectorQC_docker repository
 
 Once the pipeline is finished you can receive a mail with attached the MultiQC report.
 
@@ -18,14 +18,14 @@ You need either a **Docker** (https://www.docker.com/) or **Singularity** (https
      curl -s https://get.nextflow.io | bash 
 
 -----
-To run the pipeline you have to clone this repository and the corresponding Docker FILE for creating the Docker / Singularity image. 
+To run the pipeline you have to download this repository.
 
 ## Install (current version 1.0)
  
     curl -s -L https://github.com/biocorecrg/vectorQC/archive/v1.0.tar.gz
     tar -zvxf v1.0.tar.gz
 
-The config file **nextflow.config** contains information about location of the Singularity image and whether to use or not Singularity and requirements (like memory, CPUs etc) for every step. You might want to change the part of container use in case you want to use **Docker** or **Singularity** by un-commenting the corresponding portion.
+The config file **nextflow.config** contains information about location of the Singularity image and whether to use or not Singularity and requirements (like memory, CPUs etc) for every step. You might want to change the part of container use in case you want to use either **Docker** or **Singularity** by un-commenting the corresponding portion (default is **Docker**).
 
      sh INSTALL.sh 
 
