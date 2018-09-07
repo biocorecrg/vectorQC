@@ -19,10 +19,9 @@ You need either a **Docker** (https://www.docker.com/) or **Singularity** (https
      curl -s https://get.nextflow.io | bash 
 
 -----
+## Install (current version 1.0)
 To run the pipeline you have to download this repository.
 
-## Install (current version 1.0)
- 
     curl -s -L https://github.com/biocorecrg/vectorQC/archive/v1.0.tar.gz
     tar -zvxf v1.0.tar.gz
 
