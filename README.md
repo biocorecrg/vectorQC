@@ -2,8 +2,9 @@
 
 [![DOI](https://zenodo.org/badge/144697659.svg)](https://zenodo.org/badge/latestdoi/144697659)
 [![Build Status](https://travis-ci.org/biocorecrg/vectorQC.svg?branch=master)](https://travis-ci.org/biocorecrg/vectorQC)
-[![License: MPL 2.0] (https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)] (https://opensource.org/licenses/MPL-2.0)
-[![Nextflow version] (https://img.shields.io/badge/nextflow-%E2%89%A50.31.0-brightgreen.svg)] (https://www.nextflow.io/)
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
+[![Nextflow version](https://img.shields.io/badge/nextflow-%E2%89%A50.31.0-brightgreen.svg)](https://www.nextflow.io/)
+![Docker Automated build](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)
 
 This Nextflow pipeline analyzes the result of MIseq sequencing of a collection of vectors (300 bp x 2 paired ends). The input is a pair of fastq files per sample (vector) and is specified in **params.config** file. The default **feature db** file is obtained by the tool PlasMapper (http://wishart.biology.ualberta.ca/PlasMapper/) while the **ReBase** is the database for restriction enzymes (http://rebase.neb.com/rebase/rebase.html).
 
