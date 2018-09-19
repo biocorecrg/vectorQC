@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# This code reads a fasta file containg "inserted sequences" and it calculate the size and
+# add this information together with the tag [INS] in the header to be parsed by parse.py
 
 __author__ = 'luca.cozzuto@crg.eu'
 # -*- coding utf-8 -*-
