@@ -71,7 +71,6 @@ for x in range(0, xfold):
 outhandle.write(seqout)			
 outhandle.close()		
 
-#os.system("art_illumina -ss MSv3 -na -i " + outfile + " -p -l 250 -f 1 -m 400 -s 200 -o " + outfile + "; rm " + outfile)	
 os.system("wgsim -d " + str(outerd) + " -s " + str(stdev) + " -N " + str(int(size*xfold/readsize)) + " -1 " + str(readsize) + " -2 " + str(readsize) + " " + outfile + " " + outfile + "_1.fq " + outfile + "_2.fq; rm " + outfile)	
 	
 
