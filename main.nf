@@ -208,7 +208,7 @@ process assemble {
 /*
  * joine db files
  */
-process makeInsertDB {
+process prepareDB {
     tag "$params.inserts"
 
     when:
