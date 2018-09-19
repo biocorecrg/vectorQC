@@ -59,13 +59,6 @@ if( !featuresdb.exists() ) exit 1, "Missing feature file: ${params.features}"
 commonenz = file(params.commonenz)
 if( !commonenz.exists() ) exit 1, "Missing common enzyme file: ${params.commonenz}"
 
-multiconfig = file("$baseDir/config.yaml")
-if( !multiconfig.exists() ) exit 1, "Missing multiconfig file: $baseDir/config.yaml"
-
-tooldb = file("$baseDir/conf_tools.txt")
-if( !tooldb.exists() ) exit 1, "Missing tooldb file: $baseDir/conf_tools.txt"
-
-
 
 outputQC        = "${params.output}/QC"
 outputAssembly  = "${params.output}/Assembly"
@@ -73,7 +66,7 @@ outputBlast      = "${params.output}/Blast"
 outputRE          = "${params.output}/REsites"
 outputPlot      = "${params.output}/Plots"
 outputGBK        = "${params.output}/GenBank"
-outputMultiQC    = "${params.output}/multiQC"
+outputMultiQC    = "${params.output}/MultiQC"
 outputReport    = file("${outputMultiQC}/multiqc_report.html")
 
 
@@ -236,7 +229,7 @@ process prepareDB {
  * Make blast db
  */
  
-process makeblastdb {
+process makeBlastDB {
     tag "$features_file"
     
     input:
