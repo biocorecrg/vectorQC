@@ -41,7 +41,6 @@ reads                       : ${params.reads}
 email for notification      : ${params.email}
 output (output folder)      : ${params.output}
 commonenz (common enzymes)  : ${params.commonenz}
-multiconfig                 : ${params.multiconfig}
 features                     : ${params.features}
 inserts                     : ${params.inserts}
 """
@@ -59,11 +58,11 @@ if( !featuresdb.exists() ) exit 1, "Missing feature file: ${params.features}"
 commonenz = file(params.commonenz)
 if( !commonenz.exists() ) exit 1, "Missing common enzyme file: ${params.commonenz}"
 
-multiconfig = file(params.multiconfig)
-if( !multiconfig.exists() ) exit 1, "Missing multiconfig file: ${params.multiconfig}"
+multiconfig = file("$baseDir/config.yaml")
+if( !multiconfig.exists() ) exit 1, "Missing multiconfig file: $baseDir/config.yaml"
 
-tooldb = file(params.tooldb)
-if( !tooldb.exists() ) exit 1, "Missing tooldb file: ${params.tooldb}"
+tooldb = file("$baseDir/conf_tools.txt")
+if( !tooldb.exists() ) exit 1, "Missing tooldb file: $baseDir/conf_tools.txt"
 
 
 
