@@ -40,8 +40,9 @@ Biocore@CRG VectorQC - N F  ~  version ${version}
 reads                       : ${params.reads}
 email for notification      : ${params.email}
 output (output folder)      : ${params.output}
+adapter                     : ${params.adapter}"
 commonenz (common enzymes)  : ${params.commonenz}
-features                     : ${params.features}
+features                    : ${params.features}
 inserts                     : ${params.inserts}
 """
 
@@ -134,7 +135,7 @@ process trimReads {
     file("*trimmed.log") into logTrimming_for_QC
 
     script:    
-    def trimmer = new Trimmer(reads:reads, id:pair_id, min_read_size:1, cpus:task.cpus)
+    def trimmer = new Trimmer(reads:reads, extrapars:"-x ${params.adapter}", id:pair_id, min_read_size:1, cpus:task.cpus)
     trimmer.trimWithSkewer()
 }
 
