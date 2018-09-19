@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+# This code uses the input fasta file, the results of blast in tabular format, 
+# the results of the restric program and it generates both a tabular file for being displayed in CGVIEW 
+# and a genbank file to be used in other programs. It also allows the problem of the circularity of the genome
+# for both blast and restrict programs.
+
 
 __author__ = 'luca.cozzuto@crg.eu'
 # -*- coding utf-8 -*-
