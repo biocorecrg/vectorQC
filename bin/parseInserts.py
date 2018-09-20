@@ -30,18 +30,6 @@ opts = options_arg()
 fafile = opts.input
 outfile = opts.outfile
 
-# trans code
-trans_code = {'HYB': 'score',
-'LOC': 'score',
-'ORI': 'origin_of_replication',
-'OTH': 'score',
-'PRO': 'promoter',
-'REG': 'regulatory_sequence',
-'REP': 'gene',
-'SEL': 'gene',
-'TAG': 'score',
-'TER': 'terminator'}
-
 # read input and prepare output
 fahandle	= open(fafile, 'rb')
 outhandle	= open(outfile, 'w+')
