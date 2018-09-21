@@ -30,7 +30,7 @@ if [ -e "conf_tools.txt" ]; then {
         echo "make_tool_desc_for_multiqc installed"
 } else {
                 echo "make_tool_desc_for_multiqc not installed. Installing it..."
-                curl -k -L https://github.com/CRG-CNAG/make_tool_desc_for_multiqc/archive/${tool_desc_ver}.tar.gz ${tool_desc_ver}.tar.gz
+                curl -k -L https://github.com/CRG-CNAG/make_tool_desc_for_multiqc/archive/${tool_desc_ver}.tar.gz >  ${tool_desc_ver}.tar.gz
                 tar -zvxf ${tool_desc_ver}.tar.gz
 		mv make_tool_desc_for_multiqc-${tool_desc_ver}/conf_tools.txt .
                 rm -fr make_tool_desc_for_multiqc-${tool_desc_ver} 
