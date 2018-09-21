@@ -217,5 +217,5 @@ outhandlegb.close()
 
 if len(inserts)==0:
 	 inserts.append("-")
-outhandlog.write(", ".join(inserts))
+outhandlog.write(",".join(inserts))
 outhandlog.close()
