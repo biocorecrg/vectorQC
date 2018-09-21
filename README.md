@@ -20,7 +20,7 @@ On Mac OS, Docker can be installed, with the Homebrew manager (https://brew.sh),
 
      brew cask install docker
      
-NextFlow needs both **Java RE** and **Java SE Developer Kit (JDK)** version 1.8 or later (check it with "java -version"). 
+NextFlow needs both **Java RE** and **Java SE Developer Kit (JDK)** version 1.8 or later (JDK is not automatically updated on MAC; it needs to be manually installed; check its version with "java -version"). 
 To install NextFlow:
 
      curl -s https://get.nextflow.io | bash 
