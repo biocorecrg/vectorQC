@@ -14,13 +14,13 @@ This Nextflow pipeline analyzes the results of the MiSeq sequencing of a collect
 Once the pipeline is finished you will receive an e-mail with the MultiQC report attached.
 
 
-## Requisites
+## Software Requirements 
 You need either a **Docker** (https://www.docker.com/) or **Singularity** (https://www.sylabs.io/) Linux containers and **NextFlow** workflow manager (https://www.nextflow.io/). 
-On Mac OS, Docker can be installed, with the Homebrew manager (https://brew.sh) as:
+On Mac OS, Docker can be installed, with the Homebrew manager (https://brew.sh), as:
 
      brew cask install docker
      
-NextFlow needs **Java** and **JAVA developer kit (JDK)**, specifically Java version 1.8 (check it with "java -version"). 
+NextFlow needs both **Java RE** and **Java SE Developer Kit (JDK)** version 1.8 or later (check it with "java -version"). 
 To install NextFlow:
 
      curl -s https://get.nextflow.io | bash 
