@@ -45,7 +45,7 @@ To test it:
 This downloads the **BioNextflow library** and the file conf_tools.txt containing information about tools used by the pipeline. 
 
 -----
-## Modifying nextflow.config and Dockerfile (optional) 
+## Modify nextflow.config and Dockerfile (optional) 
 
 The config file **nextflow.config** provides the computational parameters (memory, CPUs, run time) that you might want to change; if the pipeline is run on the cluster, the batch system parameters might need to be provided (e.g., queue names). By default, the Docker container is used (see Dockerfile). Although Singularity can be used instead (uncomment this line); in this case it will be made off the Docker image. 
 In Dockerfile, the user can change versions of software used by the pipeline.  
@@ -53,9 +53,18 @@ In Dockerfile, the user can change versions of software used by the pipeline.
 -----
 ## Run VectorQC test example
 
-First, simulate paired reads for vectors in 
+First, simulate paired reads for vectors in ./examples, running:
 
-## Parameters
+     ./simulate nextflow run simulate.nf
+
+The result of running this pipeline is fastq files in ./simulate/output. The parameters for the coverage and reads are provided and can be changed in ./simulate/params.config.
+
+Now, the pipeline can be run on these simulated fastq files:
+
+     nextflow run main.nf
+     
+
+## Check required parameters and modify params.config
 To check the required parameters you can type nextflow run. Params are specified in **params.config** file.
 
     nextflow run main.nf --help
