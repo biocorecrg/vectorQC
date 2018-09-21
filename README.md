@@ -15,7 +15,7 @@ Once the pipeline is finished you will receive an e-mail with the MultiQC report
 
 
 ## Software Requirements 
-You need either a **Docker** (https://www.docker.com/) or **Singularity** (https://www.sylabs.io/) Linux containers and **NextFlow** workflow manager (https://www.nextflow.io/). 
+**Docker** (https://www.docker.com/) or **Singularity** (https://www.sylabs.io/) Linux containers and **NextFlow** workflow manager (https://www.nextflow.io/). 
 On Mac OS, Docker can be installed, with the Homebrew manager (https://brew.sh), as:
 
      brew cask install docker
@@ -30,8 +30,7 @@ To test it:
     ./nextflow run hello
     
 -----
-## Install (current version 1.0)
-To run the pipeline you have to download this repository.
+## Install Pipeline (current version 1.0)
 
     curl -s -L https://github.com/biocorecrg/vectorQC/archive/v1.0.tar.gz
     tar -zvxf v1.0.tar.gz
