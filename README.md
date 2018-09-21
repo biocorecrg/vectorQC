@@ -20,6 +20,8 @@ On Mac OS, Docker can be installed, with the Homebrew manager (https://brew.sh),
 
      brew cask install docker
      
+After Docker is installed, to be able to run the pipeline, you need to launch Docker (e.g., on Mac, clicking on it from the Launchpad; for the first time launch, Docker will ask you to register on its website).
+
 NextFlow needs both **Java RE** and **Java SE Developer Kit (JDK)** version 1.8 or later (JDK is not automatically updated on MAC; it needs to be manually installed; check its version with "java -version"). 
 To install NextFlow:
 
@@ -30,16 +32,28 @@ To test it:
     ./nextflow run hello
     
 -----
-## Install Pipeline (current version 1.0)
+## Download VectorQC (current version 1.0)
 
     curl -s -L https://github.com/biocorecrg/vectorQC/archive/v1.0.tar.gz
     tar -zvxf v1.0.tar.gz
 
-The config file **nextflow.config** contains information about location of the Singularity image and whether to use or not Singularity and requirements (like memory, CPUs etc) for every step. You might want to change the part of container use in case you want to use either **Docker** or **Singularity** by un-commenting the corresponding portion (default is **Docker**).
+-----
+## Install VectorQC 
 
      sh INSTALL.sh 
 
-for downloading the **BioNextflow library** and the file containing the information about the tools
+This downloads the **BioNextflow library** and the file conf_tools.txt containing information about tools used by the pipeline. 
+
+-----
+## Modifying nextflow.config and Dockerfile (optional) 
+
+The config file **nextflow.config** provides the computational parameters (memory, CPUs, run time) that you might want to change; if the pipeline is run on the cluster, the batch system parameters might need to be provided (e.g., queue names). By default, the Docker container is used (see Dockerfile). Although Singularity can be used instead (uncomment this line); in this case it will be made off the Docker image. 
+In Dockerfile, the user can change versions of software used by the pipeline.  
+
+-----
+## Run VectorQC test example
+
+First, simulate paired reads for vectors in 
 
 ## Parameters
 To check the required parameters you can type nextflow run. Params are specified in **params.config** file.
@@ -91,15 +105,6 @@ It is the text file used for generating a report with used tools. It is automati
 ### Email
 This parameter is useful to receive a mail once the process is finished / crashed.
 
------
-## Running the pipeline
-
-    nextflow run main.nf > log.txt
-
-Some useful nextflow parameter:
-
-1. -bg will send the process in background
-1. -resume will resume a previous failed run
 
 ---------
 
