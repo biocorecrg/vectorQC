@@ -40,7 +40,7 @@ Biocore@CRG VectorQC - N F  ~  version ${version}
 reads                       : ${params.reads}
 email for notification      : ${params.email}
 output (output folder)      : ${params.output}
-adapter                     : ${params.adapter}"
+adapter                     : ${params.adapter}
 commonenz (common enzymes)  : ${params.commonenz}
 features                    : ${params.features}
 inserts                     : ${params.inserts}
@@ -58,6 +58,12 @@ if( !featuresdb.exists() ) exit 1, "Missing feature file: ${params.features}"
 
 commonenz = file(params.commonenz)
 if( !commonenz.exists() ) exit 1, "Missing common enzyme file: ${params.commonenz}"
+
+tooldb = file("$baseDir/conf_tools.txt")
+if( !tooldb.exists() ) exit 1, "Missing tooldb: conf_tools.txt"
+
+multiconfig = file("$baseDir/config.yaml")
+if( !multiconfig.exists() ) exit 1, "Missing config file config.yaml"
 
 
 outputQC        = "${params.output}/QC"
