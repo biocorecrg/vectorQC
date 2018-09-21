@@ -15,12 +15,20 @@ Once the pipeline is finished you will receive an e-mail with the MultiQC report
 
 
 ## Requisites
-You need either a **Docker** (https://www.docker.com/) or **Singularity** (https://www.sylabs.io/) Linux containers and **nextflow** workflow manager (https://www.nextflow.io/). Nextflow will need both **Java** and **JAVA developer kit (JDK)** to be installed in your computer.
+You need either a **Docker** (https://www.docker.com/) or **Singularity** (https://www.sylabs.io/) Linux containers and **NextFlow** workflow manager (https://www.nextflow.io/). 
+On Mac OS, Docker can be installed, with the Homebrew manager (https://brew.sh) as:
 
- To install nextflow:
+     brew cask install docker
+     
+NextFlow needs **Java** and **JAVA developer kit (JDK)**, specifically Java version 1.8 (check it with "java -version"). 
+To install NextFlow:
 
      curl -s https://get.nextflow.io | bash 
 
+To test it:
+
+    ./nextflow run hello
+    
 -----
 ## Install (current version 1.0)
 To run the pipeline you have to download this repository.
