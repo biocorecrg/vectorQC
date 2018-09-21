@@ -51,37 +51,16 @@ The config file **nextflow.config** provides the computational parameters (memor
 In Dockerfile, the user can change versions of software used by the pipeline.  
 
 -----
-## Run VectorQC test example
-
-First, simulate paired reads for vectors in ./examples, running:
-
-     ./simulate nextflow run simulate.nf
-
-The result of running this pipeline is fastq files in ./simulate/output. The parameters for the coverage and reads are provided and can be changed in ./simulate/params.config.
-
-Now, the pipeline can be run on these simulated fastq files:
-
-     nextflow run main.nf
-     
-
 ## Check required parameters and modify params.config
-To check the required parameters you can type nextflow run. Params are specified in **params.config** file.
+To check the required parameters type 
 
     nextflow run main.nf --help
 
-|parameter name         | value|
-|---------------------------------|------------------------|
-|reads                        |./test/\*{1,2}.fq|
-|commonenz (common enzymes)   |./db/common.ids|
-|multiconfig (common enzymes) |config.yaml|
-|features                     |./db/features.fasta.nt.gz|
-|inserts                      |./test/inserts/genes.fa|
-|output (output folder)       |output|
-|tooldb                       |"conf_tools.txt"|
-|email for notification       |yourmail@yourdomain|
+For the test run, the only parameter you might want to change is the email address, if you want to recieve an email upon finishing the run.
+Below are all parameters in params.config are explain one by one.
 
 -----
-
+## Input parameters
 ### Reads
 **!!Important!!** when specifying the parameters **reads** by command line you should use **"quotation marks"** if not the * will be translated in the first file. Be careful with the way you name the file since filenames can vary among facilities, machines etc.
 
@@ -114,6 +93,19 @@ It is the text file used for generating a report with used tools. It is automati
 ### Email
 This parameter is useful to receive a mail once the process is finished / crashed.
 
+-----
+## Run VectorQC test example
+
+First, simulate paired reads for vectors in ./examples, running:
+
+     ./simulate nextflow run simulate.nf
+
+The result of running this pipeline is fastq files in ./simulate/output. The parameters for the coverage and reads are provided and can be changed in ./simulate/params.config.
+
+Now, the pipeline can be run on these simulated fastq files:
+
+     nextflow run main.nf
+     
 
 ---------
 
