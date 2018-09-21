@@ -65,6 +65,8 @@ if( !tooldb.exists() ) exit 1, "Missing tooldb: conf_tools.txt"
 multiconfig = file("$baseDir/config.yaml")
 if( !multiconfig.exists() ) exit 1, "Missing config file config.yaml"
 
+inserts_file = file(params.inserts)
+
 
 outputQC        = "${params.output}/QC"
 outputAssembly  = "${params.output}/Assembly"
@@ -124,7 +126,8 @@ process raw_fastqc {
  
 process trimReads {
     tag "$pair_id"
-        
+    publishDir outputQC, mode: 'copy'
+      
     input:
     set pair_id, file(reads) from (read_files_for_trimming)
 
@@ -215,12 +218,13 @@ process prepareDB {
 
     input:
     file(features_file) from featuresdb
+    file(inserts_file)
     
     output:
     file("whole_db_pipe.fasta") into whole_db_fasta
     
     """
-        parseInserts.py -i ${params.inserts} -o  whole_db_pipe.fasta
+        parseInserts.py -i ${inserts_file} -o  whole_db_pipe.fasta
         if [ `echo ${features_file} | grep ".gz"` ]; then 
             zcat ${features_file} >> whole_db_pipe.fasta
         else 
