@@ -23,7 +23,7 @@ def options_arg():
     parser.add_option('-i', '--input', help='Input sequence name', dest="input")
     parser.add_option('-o', '--output', help='Output prefix file', dest="outfile" )
     parser.add_option('-n', '--seqname', help='Sequence name', dest="seqname", default="sequence")
-    parser.add_option('-s', '--stretch', help='Stretch to check', dest="stretch", default=127)
+    parser.add_option('-k', '--kmer', help='Kmer to remove', dest="kmer", default=127)
     (opts,args) = parser.parse_args()
     if opts.outfile and opts.input:pass
     else: parser.print_help()
@@ -32,7 +32,7 @@ def options_arg():
 opts = options_arg()
 fafile = opts.input
 outfile = opts.outfile
-stretch = opts.stretch
+stretch = opts.kmer
 seqname = opts.seqname
 
 # read input and prepare output

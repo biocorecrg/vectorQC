@@ -166,7 +166,7 @@ process trimmedQC {
  
 process assemble {
     tag "$pair_id"
-    publishDir outputAssembly, mode: 'copy'
+    publishDir outputAssembly, mode: 'copy', pattern: '*_assembly.fa'
 
     label 'big_mem_cpus'
 
@@ -174,7 +174,7 @@ process assemble {
     set pair_id, file(readsA), file(readsB) from  filtered_reads_for_assembly.flatten().collate( 3 )
 
     output:
-    set pair_id, file("${pair_id}_assembly.fa") into scaffold_for_evaluation
+    set pair_id, file("${pair_id}_assembly.fa"), file("${pair_id}/spades.log") into scaffold_for_evaluation
 
     script:
     """
@@ -195,7 +195,7 @@ process assemble {
     label 'big_mem_cpus'
 
     input:
-    set pair_id, file(scaffolds) from  scaffold_for_evaluation
+    set pair_id, file(scaffolds), file(log_assembly) from  scaffold_for_evaluation
     
     output:
     set pair_id, file("${pair_id}_assembly_ev.fa") into scaffold_file_for_blast, scaffold_file_for_re, scaffold_file_for_parsing
@@ -203,7 +203,8 @@ process assemble {
 
     script:
     """
-        evaluateAssembly.py -i ${scaffolds} -o ${pair_id}_assembly_ev.fa -n ${pair_id}
+        kmer=`grep "Used k-mer sizes" ${log_assembly} | awk '{print \$NF}'`
+        evaluateAssembly.py -i ${scaffolds} -o ${pair_id}_assembly_ev.fa -n ${pair_id} -k \$kmer
     """
 }
 
