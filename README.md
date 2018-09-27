@@ -9,49 +9,60 @@
 [![Nextflow version](https://img.shields.io/badge/nextflow-%E2%89%A50.31.0-brightgreen.svg)](https://www.nextflow.io/)
 ![Docker Automated build](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)
 
-This Nextflow pipeline analyzes the results of the MiSeq sequencing of a collection of vectors (300 bp x 2 paired ends). The input is a pair of fastq files per sample (vector) and is specified in **params.config** file. The default **feature db** file is obtained by the tool PlasMapper (http://wishart.biology.ualberta.ca/PlasMapper/) using **ReBase** as a database for restriction enzymes (http://rebase.neb.com/rebase/rebase.html).
+This Nextflow pipeline analyzes the results of the MiSeq sequencing of a collection of circular DNA vectors (300 bp x 2 paired ends). 
+The input is a pair of fastq files per sample (vector) and a fasta file of inserts introduced in the vectors.
+For the input detail see description of the **params.config** file below. 
+For each vector, the pipeline output an image of the DNA map with annotation and a GenBank file .
 
-Once the pipeline is finished you will receive an e-mail with the MultiQC report attached.
 
+## Software Requirements 
+**Docker** (https://www.docker.com/) or **Singularity** (https://www.sylabs.io/) Linux containers and **NextFlow** workflow manager (https://www.nextflow.io/). 
+On Mac OS, Docker can be installed, with the Homebrew manager (https://brew.sh), as:
 
-## Requisites
-You need either a **Docker** (https://www.docker.com/) or **Singularity** (https://www.sylabs.io/) Linux containers and **nextflow** workflow manager (https://www.nextflow.io/). Nextflow will need both **Java** and **JAVA developer kit (JDK)** to be installed in your computer.
+     brew cask install docker
+     
+After Docker is installed, to be able to run the pipeline, you need to launch Docker (e.g., on Mac, clicking on it from the Launchpad; for the first time launch, Docker will ask you to register on its website).
 
- To install nextflow:
+NextFlow needs both **Java RE** and **Java SE Developer Kit (JDK)** version 1.8 or later (JDK is not automatically updated on MAC; it needs to be manually installed; check its version with "java -version"). 
+To install NextFlow:
 
      curl -s https://get.nextflow.io | bash 
 
+To test it:
+
+    ./nextflow run hello
+    
 -----
-## Install (current version 1.0)
-To run the pipeline you have to download this repository.
+## Download VectorQC (current version 1.0)
 
     curl -s -L https://github.com/biocorecrg/vectorQC/archive/v1.0.tar.gz
     tar -zvxf v1.0.tar.gz
 
-The config file **nextflow.config** contains information about location of the Singularity image and whether to use or not Singularity and requirements (like memory, CPUs etc) for every step. You might want to change the part of container use in case you want to use either **Docker** or **Singularity** by un-commenting the corresponding portion (default is **Docker**).
+-----
+## Install VectorQC 
 
      sh INSTALL.sh 
 
-for downloading the **BioNextflow library** and the file containing the information about the tools
+This downloads the **BioNextflow library** and the file conf_tools.txt containing information about tools used by the pipeline. 
 
-## Parameters
-To check the required parameters you can type nextflow run. Params are specified in **params.config** file.
+-----
+## Modify nextflow.config and Dockerfile (optional) 
+
+The config file **nextflow.config** provides the computational parameters (memory, CPUs, run time) that you might want to change; if the pipeline is run on the cluster, the batch system parameters might need to be provided (e.g., queue names). By default, the Docker container is used (see Dockerfile). Although Singularity can be used instead (uncomment this line); in this case it will be made off the Docker image. 
+In **Dockerfile**, you can change versions of software used by the pipeline.  
+
+-----
+## Check required parameters and modify params.config
+To check the required parameters type 
 
     nextflow run main.nf --help
 
-|parameter name         | value|
-|---------------------------------|------------------------|
-|reads                        |./test/\*{1,2}.fq|
-|commonenz (common enzymes)   |./db/common.ids|
-|multiconfig (common enzymes) |config.yaml|
-|features                     |./db/features.fasta.nt.gz|
-|inserts                      |./test/inserts/genes.fa|
-|output (output folder)       |output|
-|tooldb                       |"conf_tools.txt"|
-|email for notification       |yourmail@yourdomain|
+For the test run, the only parameter you might want to change is the email address, if you want to recieve an email upon finishing the run. The e-mail will come with the MultiQC report attached.
+
+Below are all parameters in params.config are explain one by one.
 
 -----
-
+## Input parameters
 ### Reads
 **!!Important!!** when specifying the parameters **reads** by command line you should use **"quotation marks"** if not the * will be translated in the first file. Be careful with the way you name the file since filenames can vary among facilities, machines etc.
 
@@ -85,14 +96,20 @@ It is the text file used for generating a report with used tools. It is automati
 This parameter is useful to receive a mail once the process is finished / crashed.
 
 -----
-## Running the pipeline
+## Run VectorQC test example 
 
-    nextflow run main.nf > log.txt
+First, simulate paired reads for vectors in ./examples, running:
 
-Some useful nextflow parameter:
+     nextflow run ./simulate/simulate.nf
 
-1. -bg will send the process in background
-1. -resume will resume a previous failed run
+The result of running this pipeline is fastq files in ./simulate/output. The parameters for the coverage and reads are provided and can be changed in ./simulate/params.config. For detail, see ./simulate/README.md.
+
+Now, the pipeline can be run on these simulated fastq files:
+
+     nextflow run main.nf
+     
+The run takes 3-5 mins.
+The results are in ./output folder. For more detail on the output, see the description of the pipeline below.
 
 ---------
 
@@ -107,52 +124,16 @@ Some useful nextflow parameter:
 1. Finally a report is generated by using MultiQC and sent by mail.
 
 -----
-## Generated plots:
-![vector ploth](https://github.com/biocorecrg/vectorQC/blob/master/plots/pTAZ.svg)
+## Pipeline output
 
-## Report
+### An example of the MultiQC Report
 ![multiQC report](https://github.com/biocorecrg/vectorQC/blob/master/plots/report_example.png)
 
+### An example of the vector map:
+![vector ploth](https://github.com/biocorecrg/vectorQC/blob/master/plots/pTAZ.svg)
+
+
 ------
-## The simulator (and test data)
-In the folder **simu** there is another NF pipeline for simulating reads starting from vector sequences. It is basically a wrapper of **wgsim** tool adapted to generate sequence from circular genomes. In the folder **examples** there are some inserted genes and vectors.
-
-### Parameters
-|parameter name         | value|
-|---------------------------------|------------------------|
-|seqs                         |"$baseDir/../test/vectors/\*.fa"|
-|fold                         |3000|
-|outerd                       |600|
-|stdev                        |100|
-|size                         |300|
-|output                       |output|
-|email for notification       |yourmail@yourdomain|
-
------
-
-### Seqs
-Fasta sequences with vectors.
-
-### Fold
-Number of time that the vector should be covered by the reads.
-
-### Outerd
-Outer read distance.
-
-### Stdev
-Standard deviation of the outer read distance
-
-### Output
-Output folder
-
-### Email
-Mail address for receiving a mail once the process is finished / crashed.
-
------
-## Running the simulator and the test examples
-     nextflow run simulate/simulate.nf 
-     nextflow run main.nf
-
 -----
 ## DAG graph
 ![DAG graph](https://github.com/biocorecrg/vectorQC/blob/master/plots/grafico.png)
