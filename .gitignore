@@ -1,4 +1,5 @@
 output_real
+params.config
 params.config.def
 real_data
 test_trim
