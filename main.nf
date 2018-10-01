@@ -141,7 +141,7 @@ process trimReads {
     file("*trimmed.log") into logTrimming_for_QC
 
     script:    
-    def trimmer = new Trimmer(reads:reads, extrapars:"-q ${params.meanquality} -Q ${params.trimquality} -x ${params.adapter}", id:pair_id, min_read_size:params.minsize, cpus:task.cpus)
+    def trimmer = new Trimmer(reads:reads, extrapars:"-Q ${params.meanquality} -q ${params.trimquality} -x ${params.adapter}", id:pair_id, min_read_size:params.minsize, cpus:task.cpus)
     trimmer.trimWithSkewer()
 }
 
