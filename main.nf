@@ -153,7 +153,7 @@ process trimmedQC {
     file(filtered_read) from filtered_read_for_QC.flatten()
 
     output:
-    file("*_filt_fastqc.zip") into trimmed_fastqc_files
+    file("*_filt_fastqc.*") into trimmed_fastqc_files
 
     script:
     def qc = new QualityChecker(input:filtered_read, cpus:task.cpus)
