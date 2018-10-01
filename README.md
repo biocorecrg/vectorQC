@@ -8,6 +8,8 @@
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 [![Nextflow version](https://img.shields.io/badge/nextflow-%E2%89%A50.31.0-brightgreen.svg)](https://www.nextflow.io/)
 ![Docker Automated build](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)
+[![Docker Build Status](https://img.shields.io/docker/build/jrottenberg/ffmpeg.svg)] (https://dockerbuildbadges.quelltext.eu/status.svg?organization=lucacozzuto&repository=vectorqc)
+
 
 This Nextflow pipeline analyzes the results of the MiSeq sequencing of a collection of circular DNA vectors (300 bp x 2 paired ends). 
 The input is a pair of fastq files per sample (vector) and a fasta file of inserts introduced in the vectors.
