@@ -45,6 +45,7 @@ minsize (after filtering)   : ${params.minsize}
 trimquality                 : ${params.trimquality}
 meanquality                 : ${params.meanquality}
 commonenz (common enzymes)  : ${params.commonenz}
+merge (merge read pairs)    : ${params.merge}
 features                    : ${params.features}
 inserts                     : ${params.inserts}
 """
@@ -104,8 +105,23 @@ Channel
 Channel
     .fromPath( params.reads )                                             
     .ifEmpty { error "Cannot find any reads matching: ${params.reads}" }
-    .set {reads_for_fastqc} 
+    .into {reads_for_fastqc; read_files_for_size} 
 
+
+/*
+ * Extract read length 
+*/
+process getReadLength {
+    input:
+    file(single_read_pairs) from read_files_for_size.first()
+
+    output:
+    stdout into (read_length_for_merging)
+
+	script:
+	def qc = new QualityChecker(input:single_read_pairs)
+	qc.getReadSize()
+}
 
 /*
  * Run FastQC on raw data
@@ -179,11 +195,20 @@ process assemble {
 
     input:
     set pair_id, file(readsA), file(readsB) from  filtered_reads_for_assembly.flatten().collate( 3 )
+    val read_size from read_length_for_merging.map { it.trim().toInteger() }
 
     output:
     set pair_id, file("${pair_id}_assembly.fa"), file("${pair_id}/spades.log") into scaffold_for_evaluation
 
     script:
+
+    if( params.merge)
+    """
+       flash -t ${task.cpus} -o joint_reads -m 50 -M ${read_size} ${readsA} ${readsB}
+       spades.py --cov-cutoff auto --careful -s joint_reads.extendedFrags.fastq -o ${pair_id} -t ${task.cpus} -m ${task.memory.giga} 
+       cp ${pair_id}/scaffolds.fasta ${pair_id}_assembly.fa
+    """
+    else 
     """
        spades.py --cov-cutoff auto --careful --pe1-1 ${readsA} --pe1-2 ${readsB} -o ${pair_id} -t ${task.cpus} -m ${task.memory.giga} 
        cp ${pair_id}/scaffolds.fasta ${pair_id}_assembly.fa
