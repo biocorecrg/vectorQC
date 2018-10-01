@@ -6,11 +6,13 @@ MAINTAINER Luca Cozzuto <lucacozzuto@gmail.com>
 ARG SKEWER_VERSION=0.2.2
 ARG MULTIQC_VERSION=1.6
 ARG FASTQC_VERSION=0.11.5
-ARG SAMTOOLS_VERSION=1.4.1 # tool wgsim; this is needed by the simulator NextFlow pipeline
+# tool wgsim this is needed by the simulator NextFlow pipeline
+ARG SAMTOOLS_VERSION=1.4.1
 ARG SPADES_VERSION=3.12.0
 ARG BLAST_VERSION=2.7.1
 ARG EMBOSS_VERSION=6.6.0
 ARG TOOL_MULTIQC_VERSION=1.3
+ARG FLASH_VERSION=1.2.11
 
 #upgrade pip
 RUN pip install --upgrade pip
@@ -20,6 +22,11 @@ RUN yum install -y xz-devel.x86_64
 RUN bash -c 'curl -k -L https://downloads.sourceforge.net/project/samtools/samtools/${SAMTOOLS_VERSION}/samtools-${SAMTOOLS_VERSION}.tar.bz2 > samtools.tar.bz2'
 RUN tar -jvxf samtools.tar.bz2
 RUN cd samtools-${SAMTOOLS_VERSION}; ./configure; make; make install; cd ../ 
+
+# Installing FLASH
+RUN bash -c 'curl -k -L http://ccb.jhu.edu/software/FLASH/FLASH-${FLASH_VERSION}-Linux-x86_64.tar.gz > flash.tar.gz'
+RUN tar -zvxf flash.tar.gz; cp FLASH-${FLASH_VERSION}-Linux-x86_64/flash /usr/local/bin/flash
+
 
 # Installing spades
 RUN bash -c 'curl -k -L http://cab.spbu.ru/files/release${SPADES_VERSION}/SPAdes-${SPADES_VERSION}-Linux.tar.gz > spades.tar.gz'
