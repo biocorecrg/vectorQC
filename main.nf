@@ -68,6 +68,8 @@ if( !tooldb.exists() ) exit 1, "Missing tooldb: conf_tools.txt"
 multiconfig = file("$baseDir/config.yaml")
 if( !multiconfig.exists() ) exit 1, "Missing config file config.yaml"
 
+logo_vectorQC = file("$baseDir/plots/logo_vectorQC_small.png")
+
 inserts_file = file(params.inserts)
 
 
@@ -409,12 +411,13 @@ process multiQC {
     file 'pre_config.yaml.txt' from multiconfig
     file (tool_report_for_multiQC)
     file (pipe_report_for_multiQC)
+    file (logo_vectorQC)
 
     output:
     file("multiqc_report.html") into multiQC 
     
     script:
-    def reporter = new Reporter(title:"VectorQC screening", application:"Mi-seq", subtitle:"", PI:"CRG", user:"CRG", id:"vectors", email:params.email, config_file:multiconfig)
+    def reporter = new Reporter(title:"VectorQC screening", application:"Mi-seq", subtitle:"", id:"vectors", email:params.email, config_file:multiconfig)
     reporter.makeMultiQCreport()
 }
 
