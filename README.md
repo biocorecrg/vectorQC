@@ -111,6 +111,16 @@ Now, the pipeline can be run on these simulated fastq files:
 The run takes 3-5 mins.
 The results are in ./output folder. For more detail on the output, see the description of the pipeline below.
 
+
+To override the parameters, run the pipeline with those parameters specified; for example, to simulate reads of the length 200bp:
+
+     nextflow run ./simulate/simulate.nf --size 250 --output simulate_250
+   
+The pipeline can be resumed and run in the background:
+
+     nextflow run main.nf --reads "./simulate/simulate_250/*{1,2}.fq" --output output_250 -resume -bg > log_250.txt
+
+
 ---------
 
 ## The pipeline
