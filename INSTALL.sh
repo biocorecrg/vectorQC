@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 # Check pipeline dependency
-bionext_ver="0.7.0"
+bionext_ver="0.7.1"
 tool_desc_ver="1.4"
 
 # Check Nextflow
