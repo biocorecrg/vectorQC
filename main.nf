@@ -43,6 +43,7 @@ output (output folder)      : ${params.output}
 adapter                     : ${params.adapter}
 minsize (after filtering)   : ${params.minsize}
 trimquality                 : ${params.trimquality}
+meanquality                 : ${params.meanquality}
 commonenz (common enzymes)  : ${params.commonenz}
 features                    : ${params.features}
 inserts                     : ${params.inserts}
@@ -140,7 +141,7 @@ process trimReads {
     file("*trimmed.log") into logTrimming_for_QC
 
     script:    
-    def trimmer = new Trimmer(reads:reads, extrapars:"-q ${params.trimquality} -x ${params.adapter}", id:pair_id, min_read_size:params.minsize, cpus:task.cpus)
+    def trimmer = new Trimmer(reads:reads, extrapars:"-q ${params.meanquality} -Q ${params.trimquality} -x ${params.adapter}", id:pair_id, min_read_size:params.minsize, cpus:task.cpus)
     trimmer.trimWithSkewer()
 }
 
