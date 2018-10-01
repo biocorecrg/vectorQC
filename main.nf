@@ -42,6 +42,7 @@ email for notification      : ${params.email}
 output (output folder)      : ${params.output}
 adapter                     : ${params.adapter}
 minsize (after filtering)   : ${params.minsize}
+trimquality                 : ${params.trimquality}
 commonenz (common enzymes)  : ${params.commonenz}
 features                    : ${params.features}
 inserts                     : ${params.inserts}
@@ -139,7 +140,7 @@ process trimReads {
     file("*trimmed.log") into logTrimming_for_QC
 
     script:    
-    def trimmer = new Trimmer(reads:reads, extrapars:"-q 20 -Q 25 -x ${params.adapter}", id:pair_id, min_read_size:params.minsize, cpus:task.cpus)
+    def trimmer = new Trimmer(reads:reads, extrapars:"-q ${params.trimquality} -x ${params.adapter}", id:pair_id, min_read_size:params.minsize, cpus:task.cpus)
     trimmer.trimWithSkewer()
 }
 
@@ -392,7 +393,7 @@ process tool_report {
         
     script:
     """
-         make_tool_desc_for_multiqc.pl -c ${tooldb} -l fastqc,skewer,spades,blastn,cgview,emboss > tools_mqc.txt
+         make_tool_desc_for_multiqc.pl -c ${tooldb} -l fastqc,skewer,spades,blast,cgview,emboss > tools_mqc.txt
     """
 }
 
