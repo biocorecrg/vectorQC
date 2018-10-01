@@ -1,6 +1,6 @@
-# [![BioCoreCRG](https://github.com/CRG-CNAG/BioCoreMiscOpen/blob/master/logo/biocore-logo_small.png)](https://biocore.crg.eu/) Biocore @ CRG
+# ![vectorQC](https://github.com/biocorecrg/vectorQC/blob/master/plots/logo_vectorQC_small.png) [![BioCoreCRG](https://github.com/CRG-CNAG/BioCoreMiscOpen/blob/master/logo/biocore-logo_small.png)](https://biocore.crg.eu/) Biocore @ CRG 
 ----------
-# ![vectorQC](https://github.com/biocorecrg/vectorQC/blob/master/plots/logo_vectorQC_small.png)
+
 
 
 [![DOI](https://zenodo.org/badge/144697659.svg)](https://zenodo.org/badge/latestdoi/144697659)
