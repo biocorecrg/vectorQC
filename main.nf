@@ -41,6 +41,7 @@ reads                       : ${params.reads}
 email for notification      : ${params.email}
 output (output folder)      : ${params.output}
 adapter                     : ${params.adapter}
+minsize (after filtering)   : ${params.minsize}
 commonenz (common enzymes)  : ${params.commonenz}
 features                    : ${params.features}
 inserts                     : ${params.inserts}
@@ -107,13 +108,15 @@ Channel
  */
 process raw_fastqc {
     tag "$read"
-    publishDir outputQC, mode: 'copy'
+    publishDir outputQC, mode: 'copy', pattern: '*fastqc*'
+
+    afterScript 'mv *_fastqc.zip `basename *_fastqc.zip _fastqc.zip`_raw_fastqc.zip'
 
     input:
     file(read) from reads_for_fastqc
 
     output:
-    file("*_fastqc.*") into raw_fastqc_files
+    file("*_fastqc.zip") into raw_fastqc_files
 
     script:
     def qc = new QualityChecker(input:read, cpus:task.cpus)
@@ -126,7 +129,7 @@ process raw_fastqc {
  
 process trimReads {
     tag "$pair_id"
-      
+          
     input:
     set pair_id, file(reads) from (read_files_for_trimming)
 
@@ -136,7 +139,7 @@ process trimReads {
     file("*trimmed.log") into logTrimming_for_QC
 
     script:    
-    def trimmer = new Trimmer(reads:reads, extrapars:"-x ${params.adapter}", id:pair_id, min_read_size:1, cpus:task.cpus)
+    def trimmer = new Trimmer(reads:reads, extrapars:"-q 20 -Q 25 -x ${params.adapter}", id:pair_id, min_read_size:params.minsize, cpus:task.cpus)
     trimmer.trimWithSkewer()
 }
 
@@ -145,7 +148,7 @@ process trimReads {
  */ 
 process trimmedQC {
     tag "$filtered_read"
-    publishDir outputQC, mode: 'copy'
+    publishDir outputQC, mode: 'copy', pattern: '*fastqc*'
 
     afterScript 'mv *_fastqc.zip `basename *_fastqc.zip _fastqc.zip`_filt_fastqc.zip'
 
@@ -153,7 +156,7 @@ process trimmedQC {
     file(filtered_read) from filtered_read_for_QC.flatten()
 
     output:
-    file("*_filt_fastqc.zip") into trimmed_fastqc_files
+    file("*_filt_fastqc*.zip") into trimmed_fastqc_files
 
     script:
     def qc = new QualityChecker(input:filtered_read, cpus:task.cpus)
