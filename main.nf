@@ -126,7 +126,6 @@ process raw_fastqc {
  
 process trimReads {
     tag "$pair_id"
-    publishDir outputQC, mode: 'copy'
       
     input:
     set pair_id, file(reads) from (read_files_for_trimming)
@@ -146,6 +145,7 @@ process trimReads {
  */ 
 process trimmedQC {
     tag "$filtered_read"
+    publishDir outputQC, mode: 'copy'
 
     afterScript 'mv *_fastqc.zip `basename *_fastqc.zip _fastqc.zip`_filt_fastqc.zip'
 
