@@ -10,7 +10,7 @@
 [![Build Status](https://travis-ci.org/biocorecrg/vectorQC.svg?branch=master)](https://travis-ci.org/biocorecrg/vectorQC)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 [![Nextflow version](https://img.shields.io/badge/nextflow-%E2%89%A50.31.0-brightgreen.svg)](https://www.nextflow.io/)
-[![Docker Build Status](https://dockerbuildbadges.quelltext.eu/status.svg?organization=lucacozzuto&repository=vectorqc)](https://dockerbuildbadges.quelltext.eu/status.svg?organization=lucacozzuto)
+[![Docker Build Status](https://dockerbuildbadges.quelltext.eu/status.svg?organization=lucacozzuto&repository=vectorqc)](https://hub.docker.com/r/lucacozzuto/vectorqc/builds/)
 
 
 This Nextflow pipeline analyzes the results of the MiSeq sequencing of a collection of circular DNA vectors (300 bp x 2 paired ends). 
