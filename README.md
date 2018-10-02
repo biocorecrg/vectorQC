@@ -37,10 +37,10 @@ To test it:
     ./nextflow run hello
     
 -----
-## Download VectorQC (current version 1.0)
+## Download VectorQC (current version 1.5)
 
-    curl -s -L https://github.com/biocorecrg/vectorQC/archive/v1.0.tar.gz
-    tar -zvxf v1.0.tar.gz
+    curl -s -L https://github.com/biocorecrg/vectorQC/archive/v1.5.tar.gz
+    tar -zvxf v1.5.tar.gz
 
 -----
 ## Install VectorQC 
