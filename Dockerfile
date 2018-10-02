@@ -26,7 +26,7 @@ RUN cd samtools-${SAMTOOLS_VERSION}; ./configure; make; make install; cd ../
 # Installing FLASH
 RUN bash -c 'curl -k -L http://ccb.jhu.edu/software/FLASH/FLASH-${FLASH_VERSION}-Linux-x86_64.tar.gz > flash.tar.gz'
 RUN tar -zvxf flash.tar.gz; cp FLASH-${FLASH_VERSION}-Linux-x86_64/flash /usr/local/bin/flash
-
+RUN chmod +x /usr/local/bin/flash
 
 # Installing spades
 RUN bash -c 'curl -k -L http://cab.spbu.ru/files/release${SPADES_VERSION}/SPAdes-${SPADES_VERSION}-Linux.tar.gz > spades.tar.gz'
@@ -74,7 +74,7 @@ RUN cpanm List::MoreUtils
 # Clean cache
 RUN yum clean all 
 #chmod
-RUN chmod +x /usr/local/bin/*
+
 #cleaning
 RUN rm -fr *.tar.gz; rm -fr *.bz2
 RUN rm -rf /var/cache/yum
