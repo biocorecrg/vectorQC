@@ -176,7 +176,6 @@ with inhandle as fi:
 				coords[featname]["stringBefore0"]  = rowsrting
 				coords[featname]["stringGBBefore0"] = rowgbstring
 
-
 for featname_break in coords:
 	size = coords[featname_break]["sizeBefore0"] + coords[featname_break]["sizeAfter0"]
 	if (size<=50):
@@ -188,7 +187,7 @@ for featname_break in coords:
 		outstring = outstring  + coords[featname_break]["stringBefore0"] + coords[featname_break]["stringAfter0"]
 		gbkstring = gbkstring  + coords[featname_break]["stringGBBefore0"] + coords[featname_break]["stringGBAfter0"]
 		if (coords[featname_break]["feattype"] == "INS"):
-			inserts.append(featname)
+			inserts.append(featname_break)
 
 gbkstring = gbkstring + "ORIGIN\n" + gbseq + "\n"
 
