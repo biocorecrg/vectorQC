@@ -130,8 +130,9 @@ The pipeline can be resumed and run in the background:
 ## The pipeline
 1. QC: Run FastQC on raw reads. It stores the results within **QC** folder.
 1. Indexing: It makes the index of feature db fasta file using makeblastb.
-1. Trimming: It reomve the adapter by using skewer tool. Another FastQC is performed after the trimming.
-1. Assembling: It assembles trimmed reads by using SPAdes assembler. Results are stored within the filder **Assembly**
+1. Trimming: It removes the adapter by using skewer tool. Another FastQC is performed after the trimming.
+1. Merging overlapping pairs: it uses flash to merge overlapping paired ends (optional).
+1. Assembling: It assembles trimmed (eventually merged) reads by using SPAdes assembler. Results are stored within the filder **Assembly**
 1. Alignment: It aligns assemlbe scaffolds to the feature DB by using blast. Results in tabular format are stored within the folder **Blast**
 1. The scaffolds are also scanned for the presence of RE sites using Emboss' restrict tool and list of common enzymes specified in **params.config**. Results are stored in **REsites** folder.
 1. The blast output and the RE sites are used for generating a plot using Circular Genome Viewer (http://wishart.biology.ualberta.ca/cgview/) and a genBank file for each sample.
