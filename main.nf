@@ -350,7 +350,7 @@ process makePlot {
     script:
     """
         parse.py -n ${pair_id} -b ${blastout} -f ${scaffold} -o ${pair_id} -r ${resites}
-        \$CGVIEW -i ${pair_id}.tab  -x true -f svg -o ${pair_id}.svg
+        \$CGVIEW -i ${pair_id}.xml  -x true -f svg -o ${pair_id}.svg
     """
 }
 
