@@ -216,7 +216,6 @@ with rihandle as fi:
 				else:
 					xmlarr["RESTR"].append( feat )
 
-print xmlarr
 #Write XML files and GeneBank file
 for feature_type, features in xmlarr.iteritems():
 	featcolor = feat_info[feature_type]['color']
