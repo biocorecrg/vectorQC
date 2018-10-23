@@ -205,12 +205,12 @@ process assemble {
     if( params.merge)
     """
        flash -t ${task.cpus} -o joint_reads -m 50 -M ${read_size} ${readsA} ${readsB}
-       spades.py --cov-cutoff auto --careful -s joint_reads.extendedFrags.fastq -o ${pair_id} -t ${task.cpus} -m ${task.memory.giga} 
+       spades.py --phred-offset 33 --cov-cutoff auto --careful -s joint_reads.extendedFrags.fastq -o ${pair_id} -t ${task.cpus} -m ${task.memory.giga} 
        cp ${pair_id}/scaffolds.fasta ${pair_id}_assembly.fa
     """
     else 
     """
-       spades.py --cov-cutoff auto --careful --pe1-1 ${readsA} --pe1-2 ${readsB} -o ${pair_id} -t ${task.cpus} -m ${task.memory.giga} 
+       spades.py --phred-offset 33 --cov-cutoff auto --careful --pe1-1 ${readsA} --pe1-2 ${readsB} -o ${pair_id} -t ${task.cpus} -m ${task.memory.giga} 
        cp ${pair_id}/scaffolds.fasta ${pair_id}_assembly.fa
     """
 }
