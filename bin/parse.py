@@ -216,6 +216,7 @@ with rihandle as fi:
 				else:
 					xmlarr["RESTR"].append( feat )
 
+print xmlarr
 #Write XML files and GeneBank file
 for feature_type, features in xmlarr.iteritems():
 	featcolor = feat_info[feature_type]['color']
@@ -224,6 +225,8 @@ for feature_type, features in xmlarr.iteritems():
 		start = featdata['start']
 		end = featdata['end']
 		featname = featdata['featname']
+		if (feature_type == "INS"): 
+			inserts.append(featname)
 		featstrand = getFeatureStrand(feat_info[feature_type]['style'], featdata['strand'])
 		outXMLstring += "  <feature color=\""+ featcolor +"\" decoration=\"" + featstrand + "\" label=\"" + featname + "\">" + "\n"
 		outXMLstring += "    <featureRange start=\"" + str(start) + "\" stop=\"" + str(end) + "\" />" + "\n"
@@ -234,6 +237,7 @@ for feature_type, features in xmlarr.iteritems():
 		else:
 			gbcoords = str(start) + ".." + str(end)
 		gbkstring += feat_info[feature_type]['gb'] + "\t" + gbcoords + "\n" + "\t\t/label=" + featname + "\n"
+
 		
 	outXMLstring += " </featureSlot>" + "\n"
 outXMLstring += "<legend position=\"upper-right\">" + "\n"
