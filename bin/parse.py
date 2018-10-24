@@ -40,7 +40,18 @@ def getFeatureStrand(feturetype, strand):
 	if (feturetype == "arrow" and strand == "reverse"):
 		featurestrand = "counterclockwise-arrow"
 	return featurestrand
-	
+
+def addToXMLarr(keyFather, keySon, xmlarr, values):
+	if keyFather not in xmlarr:
+		xmlarr[keyFather][keySon] = []
+		xmlarr[keyFather][keySon].append( values )
+	elif keySon not in xmlarr[keyFather]:
+		xmlarr[keyFather][keySon] = []
+		xmlarr[keyFather][keySon].append( values )
+	else:
+		xmlarr[keyFather][keySon].append( values )
+	return xmlarr
+		
 opts = options_arg()
 fafile = opts.fafile
 binfile = opts.binfile
@@ -140,11 +151,7 @@ with inhandle as fi:
 			minsize = maxtolerance
 		
 		if (featsize - qlength <= minsize and identity>=minidentity): 
-			if feattype not in xmlarr:
-				xmlarr[feattype] = []
-				xmlarr[feattype].append( feat )
-			else:
-				xmlarr[feattype].append( feat )
+			 xmlarr = addToXMLarr(feattype, strand, xmlarr, feat)
 				
 		if (qstart <= maxtolerance and identity>=minidentity): # special case circular genome!!
 			if ("A") not in xmlarrOrig[featname].keys():
@@ -158,7 +165,6 @@ with inhandle as fi:
 				xmlarrOrig[featname]["B"] = feat
 			elif(xmlarrOrig[featname]["B"]['end'] - xmlarrOrig[featname]["B"]['start'] < feat['end'] - feat['start']):
 				xmlarrOrig[featname]["B"] = feat
-
 
 for featname_broken in xmlarrOrig:
 	sizeA = 0
@@ -188,11 +194,7 @@ for featname_broken in xmlarrOrig:
 	else:
 		minsize = maxtolerance
 	if (featsize - size <= minsize): 
-		if feattype not in xmlarr:
-			xmlarr[feattype] = []
-			xmlarr[feattype].append( feat )
-		else:
-			xmlarr[feattype].append( feat )
+		xmlarr = addToXMLarr(feattype, strand, xmlarr, feat)
 		
 #parsing Restrict file from EMBOSS. Extracts the coordinates
 with rihandle as fi:
@@ -210,38 +212,41 @@ with rihandle as fi:
 				if (end>seqsize):
 					end = end - seqsize
 				feat = 	{"featname": fields[4], "feattype": "RESTR", "start":str(start), "end": str(end), "strand": strand}
-				if "RESTR" not in xmlarr:
-					xmlarr["RESTR"] = []
-					xmlarr["RESTR"].append( feat )
-				else:
-					xmlarr["RESTR"].append( feat )
+				xmlarr = addToXMLarr("RESTR", strand, xmlarr, feat)
 
+
+	
 #Write XML files and GeneBank file
-for feature_type, features in xmlarr.iteritems():
+featureLegends = {}
+for feature_type, features_strand in xmlarr.iteritems():
 	featcolor = feat_info[feature_type]['color']
-	outXMLstring += " <featureSlot strand=\"direct\">" + "\n"
-	for featdata in features:
-		start = featdata['start']
-		end = featdata['end']
-		featname = featdata['featname']
-		if (feature_type == "INS"): 
-			inserts.append(featname)
-		featstrand = getFeatureStrand(feat_info[feature_type]['style'], featdata['strand'])
-		outXMLstring += "  <feature color=\""+ featcolor +"\" decoration=\"" + featstrand + "\" label=\"" + featname + "\">" + "\n"
-		outXMLstring += "    <featureRange start=\"" + str(start) + "\" stop=\"" + str(end) + "\" />" + "\n"
-		outXMLstring += "    </feature>" + "\n"
-
-		if (featdata['strand'] == "reverse"):
-			gbcoords = "complement(" + str(start) + ".." + str(end) + ")"
+	for strand, features in features_strand.iteritems():
+		featureLegends[feature_type] = feature_type
+		if (strand == "forward"):
+			outXMLstring += " <featureSlot strand=\"direct\">" + "\n"
 		else:
-			gbcoords = str(start) + ".." + str(end)
-		gbkstring += feat_info[feature_type]['gb'] + "\t" + gbcoords + "\n" + "\t\t/label=" + featname + "\n"
+			outXMLstring += " <featureSlot strand=\"reverse\">" + "\n"
+		for featdata in features:
+			start = featdata['start']
+			end = featdata['end']
+			featname = featdata['featname']
+			if (feature_type == "INS"): 
+				inserts.append(featname)
+			featstrand = getFeatureStrand(feat_info[feature_type]['style'], featdata['strand'])
+			outXMLstring += "  <feature color=\""+ featcolor +"\" decoration=\"" + featstrand + "\" label=\"" + featname + "\">" + "\n"
+			outXMLstring += "    <featureRange start=\"" + str(start) + "\" stop=\"" + str(end) + "\" />" + "\n"
+			outXMLstring += "    </feature>" + "\n"
 
+			if (featdata['strand'] == "reverse"):
+				gbcoords = "complement(" + str(start) + ".." + str(end) + ")"
+			else:
+				gbcoords = str(start) + ".." + str(end)
+			gbkstring += feat_info[feature_type]['gb'] + "\t" + gbcoords + "\n" + "\t\t/label=" + featname + "\n"
 		
-	outXMLstring += " </featureSlot>" + "\n"
+		outXMLstring += " </featureSlot>" + "\n"
 outXMLstring += "<legend position=\"upper-right\">" + "\n"
 
-for feature_type, features in xmlarr.iteritems():
+for feature_type in featureLegends:
 	featcolor = feat_info[feature_type]['color']
 	featlab = feat_info[feature_type]['label']
 	outXMLstring += "  <legendItem text=\"" + featlab + "\" drawSwatch=\"true\" swatchColor=\"" + featcolor + "\" />" + "\n"
@@ -263,6 +268,8 @@ outhandlegb.close()
 if len(inserts)==0:
 	 inserts.append("-")
 outhandlog.write(",".join(inserts))
-outhandlog.close()
-
+outhandlog.close()	
+#
+#print 	strand
+		
 
