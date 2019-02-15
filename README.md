@@ -14,9 +14,9 @@
 
 
 This Nextflow pipeline analyzes the results of the MiSeq sequencing of a collection of circular DNA vectors (300 bp x 2 paired ends). 
-The input is a pair of fastq files per sample (vector) and a fasta file of inserts introduced in the vectors.
+The input is a pair of fastq files per sample (a vector) and a fasta file of inserts introduced in the vectors.
 For the input detail see description of the **params.config** file below. 
-For each vector, the pipeline output an image of the DNA map with annotation and a GenBank file .
+For each vector, the pipeline outputs an image of the DNA map with annotation and the GenBank file.
 
 
 ## Software Requirements 
@@ -52,7 +52,7 @@ This downloads the **BioNextflow library** and the file conf_tools.txt containin
 -----
 ## Modify nextflow.config and Dockerfile (optional) 
 
-The config file **nextflow.config** provides the computational parameters (memory, CPUs, run time) that you might want to change; if the pipeline is run on the cluster, the batch system parameters might need to be provided (e.g., queue names). By default, the Docker container is used (see Dockerfile). Although Singularity can be used instead (uncomment this line); in this case it will be made off the Docker image. 
+The config file **nextflow.config** provides the computational parameters (memory, CPUs, run time) that you might want to change; if the pipeline is run on the cluster, the batch system parameters might need to be provided (e.g., queue names). By default, the Docker container is used (see Dockerfile); although Singularity can be used instead (uncomment the corresponding line; in this case, the Docker image will be converted to the SIngularity image). 
 In **Dockerfile**, you can change versions of software used by the pipeline.  
 
 -----
@@ -61,20 +61,20 @@ To check the required parameters type
 
     nextflow run main.nf --help
 
-For the test run, the only parameter you might want to change is the email address, if you want to recieve an email upon finishing the run. The e-mail will come with the MultiQC report attached.
+For the test run, the only parameter you might want to change is the email address if you want to recieve an email upon finishing the run. The e-mail will arrive with the MultiQC report attached.
 
-Below are all parameters in params.config are explain one by one.
+Below all parameters in params.config are explained in detail.
 
 -----
 ## Input parameters
 ### Reads
-**!!Important!!** when specifying the parameters **reads** by command line you should use **"quotation marks"** if not the * will be translated in the first file. Be careful with the way you name the file since filenames can vary among facilities, machines etc.
+**!!Important!!** when specifying the parameters **reads** by command line you should use **"quotation marks"**. Be careful with file names as the naming can vary among facilities, instruments, etc.
 
 ### Common enzymes
-A list of restriction enzymes that are supposed to cut within our vectors. 
+A list of restriction enzymes for the vectors. 
 
 ### Multiconfig
-This is the yaml file required by multiQC to group together the information. You can modify or eventually add some information as description.
+This is the yaml-file required by multiQC to group together the information. You can modify or eventually add some information in this file.
 
 ### Features
 The fasta file downloaded by **Plasmapper** tool (http://wishart.biology.ualberta.ca/PlasMapper/). The fasta header is formatted in this way:
@@ -82,22 +82,22 @@ The fasta file downloaded by **Plasmapper** tool (http://wishart.biology.ualbert
 *lpp_promoter[PRO]{lpp},30 bases, 1123 checksum.* 
 
 - [] is a category. HYB (hyper activation binding doamin), LOC (locus), ORI (Origin of replication), OTH (other gene), PRO (promoter), REG (regulatory sequence), REP (reporter gene), SEL (gene for selection), TAG (affinity TAG) and TER (terminator).
-- {} contains a small string of the sequence decription that is shown in the ploi
-- Sequence length is after *{},* 
+- {} contains a small string of the sequence decription that is shown on the plot.
+- Sequence length. 
 
 ### Inserts
-A custom fasta file with the header containing the name of the inserted genes / piece of DNA. An example is in:
+A custom fasta file with the header containing the name of the inserted genes/DNA. An example can be found in:
      
     examples/inserts/genes.fa
 
 ### Output
-Is a parameter that specify the output folder. It is useful in case you want to have different run changing some parameters. Default is **output**.
+The output folder. Default is **output**. Outputs of the pipelines run with different parameters can be saved in different folders. 
 
 ### tooldb
-It is the text file used for generating a report with used tools. It is automatically downloaded when is run INSTALL.sh
+It is the text file used for generating a report of used software. It is automatically downloaded using INSTALL.sh. 
 
 ### Email
-This parameter is useful to receive a mail once the process is finished / crashed.
+This parameter is useful to receive an e-mail once the process is finished or crashed.
 
 -----
 ## Run VectorQC test example 
@@ -106,7 +106,7 @@ First, simulate paired reads for vectors in ./examples, running:
 
      nextflow run ./simulate/simulate.nf
 
-The result of running this pipeline is fastq files in ./simulate/output. The parameters for the coverage and reads are provided and can be changed in ./simulate/params.config. For detail, see ./simulate/README.md.
+The result of running this pipeline is the fastq files in ./simulate/output. The parameters for the coverage and reads are provided and can be changed in ./simulate/params.config. For detail, see ./simulate/README.md.
 
 Now, the pipeline can be run on these simulated fastq files:
 
@@ -116,11 +116,11 @@ The run takes 3-5 mins.
 The results are in ./output folder. For more detail on the output, see the description of the pipeline below.
 
 
-To override the parameters, run the pipeline with those parameters specified; for example, to simulate reads of the length 200bp:
+To override the parameters, run the pipeline with those parameters specified in the command line; for example, to simulate reads of the length 250bp, run
 
      nextflow run ./simulate/simulate.nf --size 250 --output simulate_250
    
-The pipeline can be resumed and run in the background:
+The pipeline can be resumed and run in the background
 
      nextflow run main.nf --reads "./simulate/simulate_250/*{1,2}.fq" --output output_250 -resume -bg > log_250.txt
 
@@ -128,11 +128,11 @@ The pipeline can be resumed and run in the background:
 ---------
 
 ## The pipeline
-1. QC: Run FastQC on raw reads. It stores the results within **QC** folder.
-1. Indexing: It makes the index of feature db fasta file using makeblastb.
+1. QC: Run FastQC on raw reads. It stores the results within the **QC** folder.
+2. Indexing: It makes the index of the fasta file of features using makeblastdb.
 1. Trimming: It removes the adapter by using skewer tool. Another FastQC is performed after the trimming.
 1. Merging overlapping pairs: it uses flash to merge overlapping paired ends (optional).
-1. Assembling: It assembles trimmed (eventually merged) reads by using SPAdes assembler. Results are stored within the filder **Assembly**
+1. Assembling: It assembles trimmed (eventually merged) reads by using the SPAdes assembler. Results are stored within the filder **Assembly**
 1. Alignment: It aligns assemlbe scaffolds to the feature DB by using blast. Results in tabular format are stored within the folder **Blast**
 1. The scaffolds are also scanned for the presence of RE sites using Emboss' restrict tool and list of common enzymes specified in **params.config**. Results are stored in **REsites** folder.
 1. The blast output and the RE sites are used for generating a plot using Circular Genome Viewer (http://wishart.biology.ualberta.ca/cgview/) and a genBank file for each sample.
