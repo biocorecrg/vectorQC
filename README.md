@@ -132,13 +132,12 @@ The pipeline can be resumed and run in the background
 1. Trimming: It removes the adapter by using skewer tool. Results are in the folder **QC**.
 1. QC of trimmed reads. Results are in the folder **QC**.
 1. Indexing: It makes the index of the fasta file of features using makeblastdb.
-1. Merging overlapping pairs of reads (optional, default - yes): the FLASH algorithm is used to merge overlapping paired reads.
-1. Assembling: It assembles trimmed (and merged) reads by using the SPAdes assembler. Results are in the folder **Assembly**.
-1. Evaluation and merging of assembled contigs using the in-house script evaluateAssembly.py (in ./bin). If more than one contig was assembled for a vector, contigs are merged into a circular DNA randomly. Results are in the folder **Assembly**.
+1. Assembly: It assembles trimmed (and merged, if needed - default is no) reads by using the SPAdes assembler. The FLASH algorithm is used to merge overlapping paired reads. 
+1. Assembly evaluation: Evaluation and merging of assembled contigs is done using the in-house script evaluateAssembly.py (in ./bin). If more than one contig was assembled for a vector, contigs are merged into a circular DNA randomly. Results are in the folder **Assembly**.
 1. Alignment: It aligns assembled scaffolds to the feature database by using blast. Results in a tabular format are stored in the folder **Blast**.
 1. Annotation of the restriction enzyme sites: The scaffolds are scanned for the presence of RE sites using the EMBOSS restrict tool and list of common enzymes specified in the commonenz parameter in **params.config**. Results are in the folder **REsites**.
-1. Generating a vector map using the Circular Genome Viewer (http://wishart.biology.ualberta.ca/cgview/) and the GenBank-formatted file for each sample. Results are in the folders **Plots** and **GenBank**. 
-1. Generating the MultiQC report and send an e-mail.
+1. Generation of a vector map using the Circular Genome Viewer (http://wishart.biology.ualberta.ca/cgview/) and the GenBank-formatted file for each sample. Results are in the folders **Plots** and **GenBank**. 
+1. Generation of the MultiQC report and sending an e-mail.
 
 -----
 ## Pipeline output
