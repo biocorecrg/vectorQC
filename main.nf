@@ -434,7 +434,7 @@ process multiQC {
 
     input:
     file '*' from raw_fastqc_files.mix(logTrimming_for_QC,trimmed_fastqc_files).flatten().collect()
-    file (multiconfig)
+    file 'pre_config.yaml.txt' from multiconfig
     file (tool_report_for_multiQC)
     file (pipe_report_for_multiQC)
     file (logo_vectorQC)
@@ -443,7 +443,7 @@ process multiQC {
     file("multiqc_report.html") into multiQC 
     
     script:
-    def reporter = new Reporter(title:"VectorQC screening", application:"Mi-seq", subtitle:"", id:"vectors", email:params.email, config_file:multiconfig)
+    def reporter = new Reporter(title:"VectorQC screening", application:"Mi-seq", subtitle:"", id:"vectors", email:params.email, config_file:"pre_config.yaml.txt")
     reporter.makeMultiQCreport()
 }
 
