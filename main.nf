@@ -316,17 +316,17 @@ process runBlast {
 process runRestrict {
     tag "$pair_id"
     publishDir outputRE
-    file(commonenz_file) from file(commonenz)
 
     input:
     set pair_id, file(scaffold_file) from scaffold_file_for_re
+    file(commonenz)
 
     output:
     set pair_id, file("${pair_id}.restrict") into restric_file_for_graph
 
     script:
     """
-        restrict -sequence ${scaffold_file} -outfile ${pair_id}.restrict -single -auto -enzymes @${commonenz_file} -plasmid
+        restrict -sequence ${scaffold_file} -outfile ${pair_id}.restrict -single -auto -enzymes @${commonenz} -plasmid
     """
 }
 
