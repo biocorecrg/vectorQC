@@ -154,4 +154,15 @@ The pipeline can be resumed and run in the background
 ## DAG graph
 ![DAG graph](https://github.com/biocorecrg/vectorQC/blob/master/plots/grafico.png)
 
+## Run in AWS Batch
+
+For running in [AWS Batch](https://aws.amazon.com/batch/), we provide a sample profile in ```nextflow.config```.
+You need to adapt your parameters according to your deployment. More details in [this blogpost](https://apeltzer.github.io/post/01-aws-nfcore/).
+
+Once your parameters are set, you can run the pipeline by using this commandline from an [EC2](https://aws.amazon.com/ec2/) instance:
+
+     nextflow run main.nf -profile awsbatch -bucket-dir s3://mys3bucket/work
+
+
+
 
