@@ -433,7 +433,7 @@ process multiQC {
     publishDir outputMultiQC, mode: 'copy'
 
     input:
-    file '*' from raw_fastqc_files.mix(logTrimming_for_QC,trimmed_fastqc_files).flatten().collect()
+    file ("*") from raw_fastqc_files.mix(logTrimming_for_QC,trimmed_fastqc_files).flatten().collect()
     file 'pre_config.yaml.txt' from multiconfig
     file (tool_report_for_multiQC)
     file (pipe_report_for_multiQC)
