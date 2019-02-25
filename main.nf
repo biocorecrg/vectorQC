@@ -316,6 +316,7 @@ process runBlast {
 process runRestrict {
     tag "$pair_id"
     publishDir outputRE
+    file(commonenz)
 
     input:
     set pair_id, file(scaffold_file) from scaffold_file_for_re
