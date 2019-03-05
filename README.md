@@ -88,12 +88,11 @@ The fasta file (in the folder **db**) downloaded using the **Plasmapper** tool (
 A list of restriction enzymes for the vectors (the file **db/common.ids**). 
 
 ### Parameter for reads trimming (using _skewer_) 
-The following parameters (in the file _params.config_) are used by the skewer algorithm for trimming reads: 
+The following parameters (in the file _params.config_) are used by the skewer algorithm for trimming reads (For further detail on the algorithm, see https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-15-182.): 
 - _adapter_ [in skewer: -x <str> Adapter sequence/file] (by default, the universal Illumina adapter is used), 
 - _minsize_ [ in skewer: -l, --min <int> The minimum read length allowed after trimming; (18)],
 - _trimquality_ [in skewer: -q, --end-quality  <int> Trim 3' end until specified or higher quality reached; (0)], and 
-- _meanquality_ [in skewer: -Q, --mean-quality <int> The lowest mean quality value allowed before trimming; (0)]. 
-For further detail, see https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-15-182.          
+- _meanquality_ [in skewer: -Q, --mean-quality <int> The lowest mean quality value allowed before trimming; (0)].          
 
 ### Adapter (param _adapter_ in the file _params.config_)
 The adapter to trim from the reads. By default, the universal adapter sequence is used.
