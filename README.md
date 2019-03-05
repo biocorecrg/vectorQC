@@ -140,16 +140,15 @@ The pipeline can be resumed and run in the background
 ---------
 
 ## Pipeline
-1. QC: Run FastQC [1] on raw reads. Results are in the folder **QC**.
-1. Trimming: Remove the adapter by using _skewer_ [2]. Results are in the folder **QC**.
-1. QC of trimmed reads. Results are in the folder **QC**.
-1. Indexing: Index the fasta file of features using _makeblastdb_ from NCBI BLAST+ toolbox [3].
-1. Assembly: Assemble trimmed reads and merged them, if needed (default is no) using the SPAdes assembler [4]. If the parameter _merge = "yes"_, the FLASH algorithm [5] is used to merge overlapping paired reads. 
-1. Assembly evaluation: Evaluate and merge assembled contigs using the in-house script evaluateAssembly.py (in ./bin). If more than one contig was assembled for a vector, contigs are merged into a circular DNA randomly. Results are in the folder **Assembly**.
-1. Alignment: Align assembled scaffolds to the feature database using BLAST [6]. Results are stored in the folder **Blast**.
-1. Annotate the restriction enzyme sites: The scaffolds are scanned for the presence of RE sites using the EMBOSS tool _restrict_ [7] and the list of common enzymes specified in the  parameter _commonenz_ in **params.config**. Results are in the folder **REsites**.
-1. Generate a vector map using the Circular Genome Viewer (http://wishart.biology.ualberta.ca/cgview/) [8] and the GenBank-formatted file for each sample. Results are in the folders **Plots** and **GenBank**. 
-1. Generate the MultiQC [9] report and send an e-mail.
+1. **QC**. Run _FastQC_ [1] on raw reads. Results are in the folder **QC**.
+1. **Trimming reads**. Remove the adapter by using _skewer_ [2]. Results are in the folder **QC**.
+1. **QC of trimmed reads**. Results are in the folder **QC**.
+1. **Indexing features**. Index the fasta file of features using _makeblastdb_ from NCBI BLAST+ toolbox [3].
+1. **Assembly of reads**. Assemble trimmed reads and merged them, if needed (default is no) using the SPAdes assembler [4]. If the parameter _merge = "yes"_, the FLASH algorithm [5] is used to merge overlapping paired reads. 
+1. **Assembly evaluation**. Evaluate and merge assembled contigs using the in-house script _evaluateAssembly.py_ (in ./bin). If more than one contig was assembled for a vector, contigs are merged into a circular DNA randomly. Results are in the folder **Assembly**.
+1. **Alignment of assembly**. Align assembled scaffolds to the feature database using BLAST [6]. Results are stored in the folder **Blast**.
+1. **Annotate the restriction enzyme sites**. The scaffolds are scanned for the presence of RE sites using the EMBOSS tool _restrict_ [7] and the list of common enzymes specified in the  parameter _commonenz_ in **params.config**. Results are in the folder **REsites**.
+1. **Generate results**. Make a vector map using the Circular Genome Viewer (http://wishart.biology.ualberta.ca/cgview/) [8] and the GenBank-formatted file for each sample. Results are in the folders **Plots** and **GenBank**. Generate the MultiQC [9] report and send an e-mail.
 
 -----
 ## Pipeline output
