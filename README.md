@@ -92,17 +92,16 @@ A list of restriction enzymes for the vectors (the file **db/common.ids**).
     minsize      = 250
     trimquality  = 1
     meanquality  = 1
-    adapter      = "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTA" 
-    merge        = ""
 
 
-### Adapter (param adapter in the file _params.config_)
+
+### Adapter (param _adapter_ in the file _params.config_)
 The adapter to trim from the reads. By default, the universal adapter sequence is used.
 
-### Output (param output in the file _params.config_)
+### Output (param _output_ in the file _params.config_)
 The output folder. Default is **output**. Outputs of the pipelines run with different parameters can be saved in different folders. 
 
-### Email (param email in the file _params.config_)
+### Email (param _email_ in the file _params.config_)
 This parameter is useful to receive an e-mail once the process is finished or crashed.
 
 
@@ -140,17 +139,17 @@ The pipeline can be resumed and run in the background
 
 ---------
 
-## The pipeline
+## Pipeline
 1. QC: Run FastQC [1] on raw reads. Results are in the folder **QC**.
-1. Trimming: Remove the adapter by using skewer [2]. Results are in the folder **QC**.
+1. Trimming: Remove the adapter by using _skewer_ [2]. Results are in the folder **QC**.
 1. QC of trimmed reads. Results are in the folder **QC**.
-1. Indexing: Index the fasta file of features using makeblastdb.
-1. Assembly: Assemble trimmed reads and merged them, if needed (default is no) using the SPAdes assembler [3]. If the parameter _merge = "yes"_, the FLASH algorithm [4] is used to merge overlapping paired reads. 
+1. Indexing: Index the fasta file of features using _makeblastdb_ from NCBI BLAST+ toolbox [3].
+1. Assembly: Assemble trimmed reads and merged them, if needed (default is no) using the SPAdes assembler [4]. If the parameter _merge = "yes"_, the FLASH algorithm [5] is used to merge overlapping paired reads. 
 1. Assembly evaluation: Evaluate and merge assembled contigs using the in-house script evaluateAssembly.py (in ./bin). If more than one contig was assembled for a vector, contigs are merged into a circular DNA randomly. Results are in the folder **Assembly**.
-1. Alignment: Align assembled scaffolds to the feature database using BLAST [5]. Results are stored in the folder **Blast**.
-1. Annotate the restriction enzyme sites: The scaffolds are scanned for the presence of RE sites using the EMBOSS tool _restrict_ [6] and the list of common enzymes specified in the  parameter _commonenz_ in **params.config**. Results are in the folder **REsites**.
-1. Generate a vector map using the Circular Genome Viewer (http://wishart.biology.ualberta.ca/cgview/) [7] and the GenBank-formatted file for each sample. Results are in the folders **Plots** and **GenBank**. 
-1. Generate the MultiQC [8] report and send an e-mail.
+1. Alignment: Align assembled scaffolds to the feature database using BLAST [6]. Results are stored in the folder **Blast**.
+1. Annotate the restriction enzyme sites: The scaffolds are scanned for the presence of RE sites using the EMBOSS tool _restrict_ [7] and the list of common enzymes specified in the  parameter _commonenz_ in **params.config**. Results are in the folder **REsites**.
+1. Generate a vector map using the Circular Genome Viewer (http://wishart.biology.ualberta.ca/cgview/) [8] and the GenBank-formatted file for each sample. Results are in the folders **Plots** and **GenBank**. 
+1. Generate the MultiQC [9] report and send an e-mail.
 
 -----
 ## Pipeline output
@@ -180,11 +179,12 @@ Once your parameters are set, you can run the pipeline by using this commandline
 
 -----
 ## References
-[1]. Andrews, S., https://www.bioinformatics.babraham.ac.uk/projects/fastqc/. 2010.
-[2]. Jiang, H., et al., Skewer: a fast and accurate adapter trimmer for next-generation sequencing paired-end reads. BMC Bioinformatics, 2014. 15: p. 182.
-[3]. Bankevich, A., et al., SPAdes: a new genome assembly algorithm and its applications to single-cell sequencing. J Comput Biol, 2012. 19(5): p. 455-77.
-[4]. Magoč, T. and S.L. Salzberg, FLASH: fast length adjustment of short reads to improve genome assemblies. Bioinformatics, 2011. 27(21): p. 2957-63.
-[5]. Altschul, S.F., et al., Basic local alignment search tool. J Mol Biol, 1990. 215(3): p. 403-10.
-[6]. Rice, P., I. Longden, and A. Bleasby, EMBOSS: the European Molecular Biology Open Software Suite. Trends Genet, 2000. 16(6): p. 276-7.
-[7]. Stothard, P. and D.S. Wishart, Circular genome visualization and exploration using CGView. Bioinformatics, 2005. 21(4): p. 537-9.
-[8]. Ewels, P., et al., MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics, 2016. 32(19): p. 3047-8.
+1. Andrews, S., https://www.bioinformatics.babraham.ac.uk/projects/fastqc/. 2010.
+2. Jiang, H., et al., Skewer: a fast and accurate adapter trimmer for next-generation sequencing paired-end reads. BMC Bioinformatics, 2014. 15: p. 182.
+3. Camacho, C., et al., BLAST+: architecture and applications. BMC Bioinformatics, 2009. 10: p. 421.
+4. Bankevich, A., et al., SPAdes: a new genome assembly algorithm and its applications to single-cell sequencing. J Comput Biol, 2012. 19(5): p. 455-77.
+5. Magoč, T. and S.L. Salzberg, FLASH: fast length adjustment of short reads to improve genome assemblies. Bioinformatics, 2011. 27(21): p. 2957-63.
+6. Altschul, S.F., et al., Basic local alignment search tool. J Mol Biol, 1990. 215(3): p. 403-10.
+7. Rice, P., I. Longden, and A. Bleasby, EMBOSS: the European Molecular Biology Open Software Suite. Trends Genet, 2000. 16(6): p. 276-7.
+8. Stothard, P. and D.S. Wishart, Circular genome visualization and exploration using CGView. Bioinformatics, 2005. 21(4): p. 537-9.
+9. Ewels, P., et al., MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics, 2016. 32(19): p. 3047-8.
