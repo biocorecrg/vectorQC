@@ -71,7 +71,9 @@ Below all parameters in params.config are explained in detail.
 **!!Important!!** when specifying the parameters **reads** by command line you should use **"quotation marks"**. Be careful with file names as the naming can vary among facilities, instruments, etc.
 
 ### Inserts (param _inserts_ in the file _params.config_)
-A custom fasta file with the header containing the name of the inserted genes/DNA. An example can be found in:
+A custom fasta file with the header containing the name of the inserted genes/DNA. No whithe-spaces are allowed in the fasta header! 
+
+An example can be found in:
      
     examples/inserts/genes.fa
 
