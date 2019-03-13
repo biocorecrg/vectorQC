@@ -101,12 +101,6 @@ The output folder. Default is **output**. Outputs of the pipelines run with diff
 This parameter is useful to receive an e-mail once the process is finished or crashed.
 
 
-### Multiconfig
-This is the yaml-file required by multiQC to group together the information. You can modify or eventually add some information in this file.
-
-
-
-
 -----
 ## Run VectorQC test example 
 
