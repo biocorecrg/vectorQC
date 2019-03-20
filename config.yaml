@@ -7,13 +7,8 @@ read_count_prefix: 'K'
 read_count_desc: 'thousands'
 
 extra_fn_clean_trim: 
-   - '-trimmed'
-
-extra_fn_clean_exts:
-    - type: remove
-      pattern: _read
-    - type: remove
-      pattern: -trimmed-pair
+   - '-trimmed.log'
+   - '_filt'
 
 table_columns_visible:
     FastQC:

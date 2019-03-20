@@ -149,13 +149,14 @@ process raw_fastqc {
  
 process trimReads {
     tag "$pair_id"
-          
+    afterScript 'mv *-trimmed-pair1* `echo *-trimmed-pair1* | sed s/\\-trimmed\\-pair1/_1_filt/g`; mv *-trimmed-pair2* `echo *-trimmed-pair2* | sed s/\\-trimmed\\-pair2/_2_filt/g`'
+         
     input:
     set pair_id, file(reads) from (read_files_for_trimming)
 
     output:
-    set pair_id, file("${pair_id}-trimmed*.fastq.gz") into filtered_reads_for_assembly
-    file("*trimmed*.fastq.gz") into filtered_read_for_QC
+    set pair_id, file("*_filt.fastq.gz") into filtered_reads_for_assembly
+    file("*_filt.fastq.gz") into filtered_read_for_QC
     file("*trimmed.log") into logTrimming_for_QC
 
     script:    
@@ -170,7 +171,7 @@ process trimmedQC {
     tag "$filtered_read"
     publishDir outputQC, mode: 'copy', pattern: '*fastqc*'
 
-    afterScript 'mv *_fastqc.zip `basename *_fastqc.zip _fastqc.zip`_filt_fastqc.zip'
+    //afterScript 'mv *_fastqc.zip `basename *_fastqc.zip _fastqc.zip`_filt_fastqc.zip'
 
     input:
     file(filtered_read) from filtered_read_for_QC.flatten()
