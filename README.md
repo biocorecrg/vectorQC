@@ -140,8 +140,8 @@ The pipeline can be resumed and run in the background
 1. **Read assembly**. Assemble trimmed reads and merged them, if needed (default is no) using the SPAdes assembler [4]. If the parameter _merge = "yes"_, the FLASH algorithm [5] is used to merge overlapping paired reads. 
 1. **Assembly evaluation**. Evaluate and merge assembled contigs using the in-house script _evaluateAssembly.py_ (in ./bin). If more than one contig was assembled for a vector, contigs are merged into a circular DNA randomly. Results are in the folder **Assembly**.
 1. **Alignment**. Align assembled scaffolds to the feature database using BLAST [6]. Results are stored in the folder **Blast**.
-1. **Annotation of the restriction enzyme sites**. The scaffolds are scanned for the presence of RE sites using the EMBOSS tool _restrict_ [7] and the list of common enzymes specified in the  parameter _commonenz_ in **params.config**. Results are in the folder **REsites**.
-1. **Generation of results**. Make a vector map using the Circular Genome Viewer (http://wishart.biology.ualberta.ca/cgview/) [8] and the GenBank-formatted file for each sample. Results are in the folders **Plots** and **GenBank**. Generate the MultiQC [9] report and send an e-mail.
+1. **Annotation of the restriction enzyme sites**. The scaffolds are scanned for the presence of RE sites using the EMBOSS tool _restrict_ [7] over the REBASE database [8] and the list of common enzymes specified in the  parameter _commonenz_ in **params.config**. Results are in the folder **REsites**.
+1. **Generation of results**. Make a vector map using the Circular Genome Viewer (http://wishart.biology.ualberta.ca/cgview/) [9] and the GenBank-formatted file for each sample. Results are in the folders **Plots** and **GenBank**. Generate the MultiQC [10] report and send an e-mail.
 
 -----
 ## Pipeline output
@@ -178,5 +178,6 @@ Once your parameters are set, you can run the pipeline by using this commandline
 5. Magoč, T. and S.L. Salzberg, FLASH: fast length adjustment of short reads to improve genome assemblies. Bioinformatics, 2011. 27(21): p. 2957-63.
 6. Altschul, S.F., et al., Basic local alignment search tool. J Mol Biol, 1990. 215(3): p. 403-10.
 7. Rice, P., I. Longden, and A. Bleasby, EMBOSS: the European Molecular Biology Open Software Suite. Trends Genet, 2000. 16(6): p. 276-7.
-8. Stothard, P. and D.S. Wishart, Circular genome visualization and exploration using CGView. Bioinformatics, 2005. 21(4): p. 537-9.
-9. Ewels, P., et al., MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics, 2016. 32(19): p. 3047-8.
+8. Roberts RJ, Vincze T, Posfai J, Macelis D. REBASE--a database for DNA restriction and modification: enzymes, genes and genomes. Nucleic Acids Res. 2015 Jan;43(Database issue) http://rebase.neb.com/rebase/rebase.html 
+9. Stothard, P. and D.S. Wishart, Circular genome visualization and exploration using CGView. Bioinformatics, 2005. 21(4): p. 537-9.
+10. Ewels, P., et al., MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics, 2016. 32(19): p. 3047-8.
