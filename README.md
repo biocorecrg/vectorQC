@@ -39,7 +39,7 @@ To test it:
 -----
 ## Download VectorQC (current version 1.5)
 
-    curl -s -L https://github.com/biocorecrg/vectorQC/archive/v1.5.tar.gz
+    curl -s -L https://github.com/biocorecrg/vectorQC/archive/v1.5.tar.gz > v1.5.tar.gz
     tar -zvxf v1.5.tar.gz
 
 -----
@@ -52,7 +52,7 @@ This downloads the **BioNextflow library** and the file conf_tools.txt containin
 -----
 ## Modify nextflow.config and Dockerfile (optional) 
 
-The config file **nextflow.config** provides the computational parameters (memory, CPUs, run time) that you might want to change; if the pipeline is run on the cluster, the batch system parameters might need to be provided (e.g., queue names). By default, the Docker container is used (see Dockerfile); although Singularity can be used instead (uncomment the corresponding line; in this case, the Docker image will be converted to the SIngularity image). 
+The config file **nextflow.config** provides the computational parameters (memory, CPUs, run time) that you might want to change; if the pipeline is run on the cluster, the batch system parameters might need to be provided (e.g., queue names). By default, the Docker container is used (see Dockerfile); although Singularity can be used instead (uncomment the corresponding line; in this case, the Docker image will be converted to the Singularity image). 
 In **Dockerfile**, you can change versions of software used by the pipeline.  
 
 -----
@@ -66,18 +66,20 @@ For the test run, the only parameter you might want to change is the email addre
 Below all parameters in params.config are explained in detail.
 
 -----
-## Input parameters
-### Reads
-**!!Important!!** when specifying the parameters **reads** by command line you should use **"quotation marks"**. Be careful with file names as the naming can vary among facilities, instruments, etc.
+## Input 
+### Reads (param _reads_ in the file _params.config_)
+This parameters indicate the path where the fastq files are stored. Each file pairs matching a glob pattern indicated by the asterisk will be analyzed in parallel. 
+**!!Important!!** when specifying the parameters **reads** by command line you should use **"quotation marks"**. Be careful with file names as the naming can vary among facilities, instruments, etc. 
 
-### Common enzymes
-A list of restriction enzymes for the vectors (the file **db/common.ids**). 
+### Inserts (param _inserts_ in the file _params.config_)
+A custom fasta file with the header containing the name of the inserted genes/DNA. No whithe-spaces are allowed in the fasta header! 
 
-### Multiconfig
-This is the yaml-file required by multiQC to group together the information. You can modify or eventually add some information in this file.
+An example can be found in:
+     
+    examples/inserts/genes.fa
 
-### Features
-The fasta file (in the folder **db**) downloaded by **Plasmapper** tool (http://wishart.biology.ualberta.ca/PlasMapper/). The fasta header is formatted in this way:
+### Features (param _features_ in the file _params.config_)
+The fasta file (in the folder **db**) downloaded using the **Plasmapper** tool (http://wishart.biology.ualberta.ca/PlasMapper/). The fasta header is formatted in this way:
 
 *lpp_promoter[PRO]{lpp},30 bases, 1123 checksum.* 
 
@@ -85,19 +87,22 @@ The fasta file (in the folder **db**) downloaded by **Plasmapper** tool (http://
 - {} contains a small string of the sequence decription that is shown on the plot.
 - Sequence length. 
 
-### Inserts
-A custom fasta file with the header containing the name of the inserted genes/DNA. An example can be found in:
-     
-    examples/inserts/genes.fa
+### Common enzymes (param _commonenz_ in the file _params.config_)
+A list of restriction enzymes for the vectors (the file **db/common.ids**). 
 
-### Output
+### Parameter for reads trimming (using _skewer_) 
+The following parameters (in the file _params.config_) are used by the skewer algorithm for trimming reads (for further detail on the algorithm, see https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-15-182): 
+- _adapter_ [in skewer: -x <str> Adapter sequence/file] (by default, the universal Illumina adapter is used), 
+- _minsize_ [ in skewer: -l, --min <int> The minimum read length allowed after trimming; (18)],
+- _trimquality_ [in skewer: -q, --end-quality  <int> Trim 3' end until specified or higher quality reached; (0)], and 
+- _meanquality_ [in skewer: -Q, --mean-quality <int> The lowest mean quality value allowed before trimming; (0)].          
+
+### Output (param _output_ in the file _params.config_)
 The output folder. Default is **output**. Outputs of the pipelines run with different parameters can be saved in different folders. 
 
-### tooldb
-It is the text file used for generating a report of used software. It is automatically downloaded using INSTALL.sh. 
-
-### Email
+### Email (param _email_ in the file _params.config_)
 This parameter is useful to receive an e-mail once the process is finished or crashed.
+
 
 -----
 ## Run VectorQC test example 
@@ -127,17 +132,16 @@ The pipeline can be resumed and run in the background
 
 ---------
 
-## The pipeline
-1. QC: Runs FastQC on raw reads. Results are in the folder **QC**.
-1. Trimming: It removes the adapter by using skewer tool. Results are in the folder **QC**.
-1. QC of trimmed reads. Results are in the folder **QC**.
-1. Indexing: It makes the index of the fasta file of features using makeblastdb.
-1. Assembly: It assembles trimmed (and merged, if needed - default is no) reads by using the SPAdes assembler. The FLASH algorithm is used to merge overlapping paired reads. 
-1. Assembly evaluation: Evaluation and merging of assembled contigs is done using the in-house script evaluateAssembly.py (in ./bin). If more than one contig was assembled for a vector, contigs are merged into a circular DNA randomly. Results are in the folder **Assembly**.
-1. Alignment: It aligns assembled scaffolds to the feature database by using blast. Results in a tabular format are stored in the folder **Blast**.
-1. Annotation of the restriction enzyme sites: The scaffolds are scanned for the presence of RE sites using the EMBOSS restrict tool and list of common enzymes specified in the commonenz parameter in **params.config**. Results are in the folder **REsites**.
-1. Generation of a vector map using the Circular Genome Viewer (http://wishart.biology.ualberta.ca/cgview/) and the GenBank-formatted file for each sample. Results are in the folders **Plots** and **GenBank**. 
-1. Generation of the MultiQC report and sending an e-mail.
+## Pipeline
+1. **QC**. Run _FastQC_ [1] on raw reads. Results are in the folder **QC**.
+1. **Trimming reads**. Remove the adapter by using _skewer_ [2]. Results are in the folder **QC**.
+1. **QC of trimmed reads**. Results are in the folder **QC**.
+1. **Indexing features**. Index the fasta file of features using _makeblastdb_ from NCBI BLAST+ toolbox [3].
+1. **Read assembly**. Assemble trimmed reads and merged them, if needed (default is no) using the SPAdes assembler [4]. If the parameter _merge = "yes"_, the FLASH algorithm [5] is used to merge overlapping paired reads. 
+1. **Assembly evaluation**. Evaluate and merge assembled contigs using the in-house script _evaluateAssembly.py_ (in ./bin). If more than one contig was assembled for a vector, contigs are merged into a circular DNA randomly. Results are in the folder **Assembly**.
+1. **Alignment**. Align assembled scaffolds to the feature database using BLAST [6]. Results are stored in the folder **Blast**.
+1. **Annotation of the restriction enzyme sites**. The scaffolds are scanned for the presence of RE sites using the EMBOSS tool _restrict_ [7] over the REBASE database [8] and the list of common enzymes specified in the  parameter _commonenz_ in **params.config**. Results are in the folder **REsites**.
+1. **Generation of results**. Make a vector map using the Circular Genome Viewer (http://wishart.biology.ualberta.ca/cgview/) [9] and the GenBank-formatted file for each sample. Results are in the folders **Plots** and **GenBank**. Generate the MultiQC [10] report and send an e-mail.
 
 -----
 ## Pipeline output
@@ -154,4 +158,26 @@ The pipeline can be resumed and run in the background
 ## DAG graph
 ![DAG graph](https://github.com/biocorecrg/vectorQC/blob/master/plots/grafico.png)
 
+## Run VectorQC on AWS Batch
 
+For running VectorQC on [AWS Batch](https://aws.amazon.com/batch/), we provide a sample profile in ```nextflow.config```.
+You need to adapt your parameters according to your deployment. For more detail, see [this blogpost](https://apeltzer.github.io/post/01-aws-nfcore/).
+
+Once your parameters are set, you can run the pipeline by using this commandline from an [EC2](https://aws.amazon.com/ec2/) instance:
+
+     nextflow run main.nf -profile awsbatch -bucket-dir s3://mys3bucket/work
+
+
+
+-----
+## References
+1. Andrews, S., https://www.bioinformatics.babraham.ac.uk/projects/fastqc/. 2010.
+2. Jiang, H., et al., Skewer: a fast and accurate adapter trimmer for next-generation sequencing paired-end reads. BMC Bioinformatics, 2014. 15: p. 182.
+3. Camacho, C., et al., BLAST+: architecture and applications. BMC Bioinformatics, 2009. 10: p. 421.
+4. Bankevich, A., et al., SPAdes: a new genome assembly algorithm and its applications to single-cell sequencing. J Comput Biol, 2012. 19(5): p. 455-77.
+5. Magoč, T. and S.L. Salzberg, FLASH: fast length adjustment of short reads to improve genome assemblies. Bioinformatics, 2011. 27(21): p. 2957-63.
+6. Altschul, S.F., et al., Basic local alignment search tool. J Mol Biol, 1990. 215(3): p. 403-10.
+7. Rice, P., I. Longden, and A. Bleasby, EMBOSS: the European Molecular Biology Open Software Suite. Trends Genet, 2000. 16(6): p. 276-7.
+8. Roberts RJ, Vincze T, Posfai J, Macelis D. REBASE--a database for DNA restriction and modification: enzymes, genes and genomes. Nucleic Acids Res. 2015 Jan;43(Database issue) http://rebase.neb.com/rebase/rebase.html 
+9. Stothard, P. and D.S. Wishart, Circular genome visualization and exploration using CGView. Bioinformatics, 2005. 21(4): p. 537-9.
+10. Ewels, P., et al., MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics, 2016. 32(19): p. 3047-8.
