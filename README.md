@@ -13,7 +13,7 @@
 [![Docker Build Status](https://dockerbuildbadges.quelltext.eu/status.svg?organization=lucacozzuto&repository=vectorqc)](https://hub.docker.com/r/lucacozzuto/vectorqc/builds/)
 
 
-This Nextflow pipeline analyzes the results of the MiSeq sequencing of a collection of circular DNA vectors (300 bp x 2 paired ends). 
+This Nextflow pipeline analyzes the results of the MiSeq sequencing of a collection of circular DNA vectors (paired ends). 
 The input is a pair of fastq files per sample (a vector) and a fasta file of inserts introduced in the vectors.
 For the input detail see description of the **params.config** file below. 
 For each vector, the pipeline outputs an image of the DNA map with annotation and the GenBank file.
