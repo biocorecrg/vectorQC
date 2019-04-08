@@ -18,6 +18,7 @@ install:
  
 # Make simulated test input
   # Make test input
+script:
   - nextflow run -with-docker simulate/simulate.nf 
 
 # Run the pipeline
