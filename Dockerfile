@@ -7,7 +7,9 @@ ARG SKEWER_VERSION=0.2.2
 ARG MULTIQC_VERSION=1.6
 ARG FASTQC_VERSION=0.11.5
 # tool wgsim this is needed by the simulator NextFlow pipeline
-ARG SAMTOOLS_VERSION=1.4.1
+ARG SAMTOOLS_VERSION=1.9
+ARG BCFTOOLS_VERSION=1.9
+ARG BWA_VERSION=0.7.17
 ARG SPADES_VERSION=3.12.0
 ARG BLAST_VERSION=2.7.1
 ARG EMBOSS_VERSION=6.6.0
@@ -19,9 +21,19 @@ RUN pip install --upgrade pip
 
 # Installing samtools
 RUN yum install -y xz-devel.x86_64
-RUN bash -c 'curl -k -L https://downloads.sourceforge.net/project/samtools/samtools/${SAMTOOLS_VERSION}/samtools-${SAMTOOLS_VERSION}.tar.bz2 > samtools.tar.bz2'
+RUN bash -c 'curl -k -L https://github.com/samtools/samtools/releases/download/${SAMTOOLS_VERSION}/samtools-${SAMTOOLS_VERSION}.tar.bz2 > samtools.tar.bz2' 
 RUN tar -jvxf samtools.tar.bz2
 RUN cd samtools-${SAMTOOLS_VERSION}; ./configure; make; make install; cd ../ 
+
+# Installing BCFtools
+RUN bash -c 'curl -k -L https://github.com/samtools/bcftools/releases/download/${BCFTOOLS_VERSION}/bcftools-${BCFTOOLS_VERSION}.tar.bz2 > bcftools.tar.bz2'
+RUN tar -jvxf bcftools.tar.bz2
+RUN cd bcftools-${BCFTOOLS_VERSION}; ./configure; make; make install; cd ../
+
+# Installing BWA
+RUN bash -c 'curl -k -L https://sourceforge.net/projects/bio-bwa/files/bwa-${BWA_VERSION}.tar.bz2/download > bwa.tar.bz2'
+RUN tar -jvxf bwa.tar.bz2
+RUN cd bwa-${BWA_VERSION}; make; ln -s $PWD/bwa /usr/local/bin/bwa; cd ../
 
 # Installing FLASH
 RUN bash -c 'curl -k -L http://ccb.jhu.edu/software/FLASH/FLASH-${FLASH_VERSION}-Linux-x86_64.tar.gz > flash.tar.gz'

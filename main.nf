@@ -38,16 +38,18 @@ Biocore@CRG VectorQC - N F  ~  version ${version}
                                                                                        
 ====================================================
 reads                       : ${params.reads}
-email for notification      : ${params.email}
-output (output folder)      : ${params.output}
+inserts                     : ${params.inserts}
+references                  : ${params.references}
+features                    : ${params.features}
+commonenz (common enzymes)  : ${params.commonenz}
 adapter                     : ${params.adapter}
 minsize (after filtering)   : ${params.minsize}
 trimquality                 : ${params.trimquality}
 meanquality                 : ${params.meanquality}
-commonenz (common enzymes)  : ${params.commonenz}
 merge (merge read pairs)    : ${params.merge}
-features                    : ${params.features}
-inserts                     : ${params.inserts}
+output (output folder)      : ${params.output}
+email for notification      : ${params.email}
+
 """
 
 if (params.help) {
@@ -74,14 +76,16 @@ logo_vectorQC = file("$baseDir/plots/logo_vectorQC_small.png")
 inserts_file = file(params.inserts)
 
 
-outputQC        = "${params.output}/QC"
-outputAssembly  = "${params.output}/Assembly"
-outputBlast      = "${params.output}/Blast"
+outputQC          = "${params.output}/QC"
+outputAssembly    = "${params.output}/Assembly"
+outputRefAssembly = "${params.output}/Refined_Assembly"
+outputBlast       = "${params.output}/Blast"
 outputRE          = "${params.output}/REsites"
-outputPlot      = "${params.output}/Plots"
-outputGBK        = "${params.output}/GenBank"
-outputMultiQC    = "${params.output}/MultiQC"
-outputReport    = file("${outputMultiQC}/multiqc_report.html")
+outputPlot        = "${params.output}/Plots"
+outputGBK         = "${params.output}/GenBank"
+outputMultiQC     = "${params.output}/MultiQC"
+outputVariants    = "${params.output}/Variants"
+outputReport      = file("${outputMultiQC}/multiqc_report.html")
 
 
 /*
@@ -107,7 +111,16 @@ Channel
     .ifEmpty { error "Cannot find any reads matching: ${params.reads}" }
     .into {reads_for_fastqc; read_files_for_size} 
 
+if( params.references == "" ) {
+    log.info "Performing analysis without known references"
+} else {
+    Channel
+       .fromFilePairs( params.references , size: 1)                                      
+       .ifEmpty { error "Cannot find any reference matching: ${params.references}" }
+       .set {references} 
 
+    log.info "Performing analysis using known references"  
+}
 /*
  * Extract read length 
 */
@@ -222,7 +235,8 @@ process assemble {
  */
  
  process evaluateAssembly {
-    tag "$pair_id"
+   publishDir outputRefAssembly, mode: 'copy', pattern: '*_assembly_ev.fa'
+   tag "$pair_id"
     
     echo true
     label 'big_mem_cpus'
@@ -231,7 +245,7 @@ process assemble {
     set pair_id, file(scaffolds), file(log_assembly) from  scaffold_for_evaluation
     
     output:
-    set pair_id, file("${pair_id}_assembly_ev.fa") into scaffold_file_for_blast, scaffold_file_for_re, scaffold_file_for_parsing
+    set pair_id, file("${pair_id}_assembly_ev.fa") into scaffold_file_for_blast, scaffold_file_for_re, scaffold_file_for_parsing, scaffold_file_for_variants
     set pair_id, file("${pair_id}_assembly_ev.fa.log") into log_assembly_for_report  
 
     script:
@@ -355,6 +369,34 @@ process makePlot {
         \$CGVIEW -i ${pair_id}.xml  -x true -f svg -o ${pair_id}.svg
     """
 }
+
+/*
+ * Run variant calling 
+ */
+ 
+process callVariants {
+    tag "$pair_id"
+    publishDir outputVariants
+
+    when: 
+    references
+    
+    input:
+    set pair_id, file(scaffold_file), file (reference_file) from scaffold_file_for_variants.join(references)
+
+    output:
+    file("${pair_id}.vcf")
+
+    script:
+    """
+        bwa index ${reference_file}
+		bwa mem ${reference_file} ${scaffold_file} | samtools view -Sb - > aln.bam
+		samtools sort aln.bam -o ${pair_id}.bam 
+		rm aln.bam
+		bcftools mpileup -Ou -f ${reference_file} ${pair_id}.bam  | bcftools call --ploidy 1 -mv -Ov -o ${pair_id}.vcf
+    """
+}
+
 
 /*
  * Join logs for making a report. 
@@ -482,4 +524,8 @@ else {
     }
 }
 
+workflow.onComplete {
+    println "Pipeline BIOCORE@CRG vectorQC completed at: $workflow.complete"
+    println "Execution status: ${ workflow.success ? 'OK' : 'failed' }"
+}
 
