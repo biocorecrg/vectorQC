@@ -52,7 +52,7 @@ This downloads the **BioNextflow library** and the file conf_tools.txt containin
 -----
 ## Modify nextflow.config and Dockerfile (optional) 
 
-The config file **nextflow.config** provides the computational parameters (memory, CPUs, run time) that you might want to change; if the pipeline is run on the cluster, the batch system parameters might need to be provided (e.g., queue names). By default, the Docker container is used (see Dockerfile); although Singularity can be used instead (uncomment the corresponding line; in this case, the Docker image will be converted to the Singularity image). 
+The config file **nextflow.config** provides the computational parameters (memory, CPUs, run time) that you might want to change; if the pipeline is run on the cluster, the batch system parameters might need to be provided (e.g., queue names). By default, the Docker container is used (see Dockerfile); although Singularity can be used instead using the nextflow parameter **-with-singularity** (in this case, the Docker image will be converted to the Singularity image). 
 In **Dockerfile**, you can change versions of software used by the pipeline.  
 
 -----
