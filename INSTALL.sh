@@ -2,7 +2,7 @@
 
 # Check pipeline dependency
 bionext_ver="0.7.1"
-tool_desc_ver="1.4"
+tool_desc_ver="1.5"
 
 # Check Nextflow
 if (command -v nextflow > /dev/null 2>&1); then {

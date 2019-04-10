@@ -465,7 +465,7 @@ process tool_report {
         
     script:
     """
-         make_tool_desc_for_multiqc.pl -c ${tooldb} -l fastqc,skewer,spades,blast,cgview,emboss > tools_mqc.txt
+         make_tool_desc_for_multiqc.pl -c ${tooldb} -l fastqc,skewer,spades,blast,cgview,emboss,samtools,bcftools,bwa > tools_mqc.txt
     """
 }
 
