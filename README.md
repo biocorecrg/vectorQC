@@ -142,8 +142,8 @@ The pipeline can be resumed and run in the background
 1. **Alignment**. Align assembled scaffolds to the feature database using BLAST [6]. Results are stored in the folder **Blast**.
 1. **Annotation of the restriction enzyme sites**. The scaffolds are scanned for the presence of RE sites using the EMBOSS tool _restrict_ [7] over the REBASE database [8] and the list of common enzymes specified in the  parameter _commonenz_ in **params.config**. Results are in the folder **REsites**.
 1. **Generation of results**. Make a vector map using the Circular Genome Viewer (http://wishart.biology.ualberta.ca/cgview/) [9] and the GenBank-formatted file for each sample. Results are in the folders 
-1. **Variant calling**. If reference sequences are provided, the pipeline will align the assembled vectors to the refence one by using BWA and it will call the variants with BCFtools. Variants are then stored within the folder **Variants** 
-**Plots** and **GenBank**. Generate the MultiQC [10] report and send an e-mail.
+1. **Variant calling**. If reference sequences are provided, the pipeline will align the assembled vectors to the refence one by using BWA[10] and it will call the variants with BCFtools[11]. Variants are then stored within the folder **Variants** 
+**Plots** and **GenBank**. Generate the MultiQC [12] report and send an e-mail.
 
 -----
 ## Pipeline output
@@ -182,4 +182,6 @@ Once your parameters are set, you can run the pipeline by using this commandline
 7. Rice, P., I. Longden, and A. Bleasby, EMBOSS: the European Molecular Biology Open Software Suite. Trends Genet, 2000. 16(6): p. 276-7.
 8. Roberts RJ, Vincze T, Posfai J, Macelis D. REBASE--a database for DNA restriction and modification: enzymes, genes and genomes. Nucleic Acids Res. 2015 Jan;43(Database issue) http://rebase.neb.com/rebase/rebase.html 
 9. Stothard, P. and D.S. Wishart, Circular genome visualization and exploration using CGView. Bioinformatics, 2005. 21(4): p. 537-9.
-10. Ewels, P., et al., MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics, 2016. 32(19): p. 3047-8.
+10. Li H, Durbin R. Fast and accurate long-read alignment with Burrows-Wheeler transform. Bioinformatics. 2010 Mar 1;26(5):589-95.
+11. Li H, Handsaker B, Wysoker A, Fennell T, Ruan J, Homer N, Marth G, Abecasis G, Durbin R; 1000 Genome Project Data Processing Subgroup. The Sequence Alignment/Map format and SAMtools. Bioinformatics. 2009 Aug 15;25(16):2078-9
+12. Ewels, P., et al., MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics, 2016. 32(19): p. 3047-8.
