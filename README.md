@@ -37,9 +37,9 @@ To test it:
     ./nextflow run hello
     
 -----
-## Download VectorQC (current version 1.5)
+## Download VectorQC (current version 1.8)
 
-    curl -s -L https://github.com/biocorecrg/vectorQC/archive/v1.5.tar.gz > v1.5.tar.gz
+    curl -s -L https://github.com/biocorecrg/vectorQC/archive/v1.8.tar.gz > v1.8.tar.gz
     tar -zvxf v1.5.tar.gz
 
 -----
